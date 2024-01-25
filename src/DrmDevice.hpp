@@ -39,7 +39,7 @@ namespace adapsurf {
 			int _devFd;
 
 			/** Full pathname of the dri device file. */
-			char* _driDeviceFilePathName;
+			const char* _driDeviceFilePathName = "/dev/dri/card0";
 	};
 }
 
