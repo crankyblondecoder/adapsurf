@@ -1,5 +1,5 @@
-# libSNL Source Directory Debug Makefile
-# -------------------------------------
+# libAdapSurf Source Directory Debug Makefile
+# -------------------------------------------
 
 # Tell make to search other paths. Separate multiple with ":"
 VPATH = ../../src/
@@ -24,7 +24,7 @@ ifneq ($(MAKECMDGOALS),clean)
     include $(objFiles:.o=.dep)
 endif
 
-%.dep : %.cpp %.h
+%.dep : %.cpp %.hpp
 	$(cname) -MM $< > $@
 
 .PHONY : clean

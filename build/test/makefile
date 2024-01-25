@@ -1,5 +1,5 @@
-# libSNL Test Directory Makefile
-# ------------------------------
+# libAdapSurf Test Directory Makefile
+# -----------------------------------
 
 # Tell make to search other paths. Separate multiple with ":"
 VPATH = ../../src/ : ../../src/test/
@@ -13,25 +13,25 @@ CXX = $(cname)
 CXXFLAGS = $(cflags)
 
 .PHONY : test
-test : snlUnitTest.o snlTest.cpp
+test : adsUnitTest.o adsTest.cpp
 	@echo
 	@echo "*** Building - Test ***"
 	@echo
-	$(cname) $(cflags) -o snlTest $(sourceLocn)snlTest.cpp snlUnitTest.o $(addprefix ../debug/, $(objFiles))
+	$(cname) $(cflags) -o adsTest $(sourceLocn)adsTest.cpp adsUnitTest.o $(addprefix ../debug/, $(objFiles))
 	@echo
 	@echo
 
-snlUnitTest.o : snlUnitTest.cpp snlUnitTest.hpp
+adsUnitTest.o : adsUnitTest.cpp adsUnitTest.hpp
 
 .PHONY : clean
 clean :
-	rm *.o *.dep snlTest
+	rm *.o *.dep adsTest
 
 .PHONY : runtest
 runtest : test
 	@echo
 	@echo "*** Running - Test ***"
 	@echo
-	./snlTest
+	./adsTest
 	@echo
 	@echo

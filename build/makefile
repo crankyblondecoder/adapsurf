@@ -1,20 +1,10 @@
-# libSNL Root Makefile
-# --------------------
+# libAdapSurf Root Makefile
+# -------------------------
 
-export objFiles := snlCircularOffsetCurve.o \
-       snlCtrlPoint.o snlCtrlPointNet.o snlCtrlPointNetCurve.o snlCtrlPointNetSurface.o snlCurve.o \
-       snlKnotVector.o \
-       snlMatrix_4x4.o snlMeshable.o \
-       snlNurbsCommon.o \
-       snlPoint.o \
-       snlSquareLinear.o snlSurface.o snlSurface_pointLoop.o \
-       snlSurface_projection.o snlSurfaceOfRevolution.o \
-       snlTransform.o snlTriangleMesh.o \
-       snlUtil.o \
-       snlVector.o snlVertex.o snlVertexNet.o
+export objFiles := surface.o
 
-export debugLibName = libSNL_debug.so.0.2
-export releaseLibName = libSNL.so.0.2
+export debugLibName = libAdapSurf_debug.so.0.1
+export releaseLibName = libAdapSurf.so.0.1
 
 .PHONY : debug
 debug :
