@@ -3,12 +3,12 @@
 
 namespace adapsurf {
 
-	class surface
+	class Surface
 	{
 		public:
 
-			~surface();
-			surface();
+			~Surface();
+			Surface();
 
 		private:
 

@@ -7,12 +7,12 @@ namespace adapsurf {
 	 * A framebuffer that all surfaces are rendered to.
 	 * @note Currently this must have a stride size (number of bytes between rows) that is compatible with Cairo.
 	 */
-	class framebuffer
+	class Framebuffer
 	{
 		public:
 
-			~framebuffer();
-			framebuffer();
+			~Framebuffer();
+			Framebuffer();
 
 		protected:
 
