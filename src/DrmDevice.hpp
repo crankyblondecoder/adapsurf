@@ -38,7 +38,10 @@ namespace adapsurf {
 			/** DRM file descriptor. */
 			int _devFd;
 
-			/** Full pathname of the dri device file. */
+			/**
+			 * Full pathname of the dri device file.
+			 * TODO This shouldn't be hard wired.
+			 */
 			const char* _driDeviceFilePathName = "/dev/dri/card0";
 	};
 }
