@@ -1,6 +1,8 @@
 #include <fcntl.h>
+#include <string>
 
 #include "DrmDevice.hpp"
+#include "Exception.hpp"
 
 using namespace adapsurf;
 
@@ -10,6 +12,9 @@ Framebuffer* DrmDevice::generateFramebuffer(unsigned width, unsigned height)
 
 	if(_devFd < 0)
 	{
-		printf("Could not open dri device %s\n", _driDeviceFilePathName);
+		std::string msg("Could not open dri device: ");
+		msg += _driDeviceFilePathName;
+
+		throw Exception(Exception::Error::DRM_BAD_DEV_FILE, msg);
 	}
 }
