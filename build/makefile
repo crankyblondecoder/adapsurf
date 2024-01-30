@@ -1,7 +1,7 @@
 # libAdapSurf Root Makefile
 # -------------------------
 
-export objFiles := surface.o
+export objFiles := Surface.o
 
 export debugLibName = libAdapSurf_debug.so.0.1
 export releaseLibName = libAdapSurf.so.0.1
