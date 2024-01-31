@@ -57,7 +57,7 @@ void adsUnitTest::addChildUnitTest(adsUnitTest* childUnitTest)
 	childUnitTest -> setLevel(_level + 1);
 }
 
-void adsUnitTest::notifyTestResult(const char* testName, bool result, const char* resultMessage)
+void adsUnitTest::notifyTestResult(const char* testName, bool result, const std::string& resultMessage)
 {
 	_result = _result && result;
 

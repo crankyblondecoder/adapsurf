@@ -60,7 +60,7 @@ class adsUnitTest
 		 * @param result True for test passing. False if it didn't.
 		 * @param resultMessage Message to annotate result.
 		 */
-		void notifyTestResult(const char* testName, bool result, const char* resultMessage);
+		void notifyTestResult(const char* testName, bool result, const std::string& resultMessage);
 
 		/**
 		 * Set the nested level of this unit test.
@@ -73,21 +73,28 @@ class adsUnitTest
 
 		/** The tests name. */
 		std::string _name;
+
 		/** Whether the unit test, overall, has passed or failed. */
 		bool _result;
+
 		/** The nested level of the unit test. Ie where in the tree it resides. */
 		int _level;
+
 		/** Pre-calculated string containing indent tabs. */
 		std::string _indentTabs;
+
 		/** Child Unit Tests. Just statically allocate it to keep things simple. */
 		adsUnitTest* _childUnitTests[16];
+
 		/** Have to keep track of the number of children. */
 		int _numChildUnitTests;
 
 		/** Unit test name must be specified. */
 		adsUnitTest();
+
 		/** Do not allow copying. */
 		adsUnitTest(const adsUnitTest& copyFrom);
+
 		/** Do not allow copying. */
 		adsUnitTest& operator= (const adsUnitTest& copyFrom);
 };

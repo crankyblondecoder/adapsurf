@@ -27,7 +27,17 @@ namespace adapsurf {
 			 * @param error Error code.
 			 * @param description Description of error.
 			 */
-			Exception(Error error, string& description) : _error{error}, _descr{description} {}
+			Exception(Error error, string& description);
+
+			/**
+			 * Get the error code associated with this exception.
+			 */
+			Error getErrorCode() const;
+
+			/**
+			 * Get the description of the error associated with this exception.
+			 */
+			const string& getErrorDescr() const;
 
 		private:
 
