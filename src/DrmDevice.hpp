@@ -2,6 +2,7 @@
 #define ADS_DRM_DEVICE_H
 
 #include <libdrm/drm.h>
+#include <xf86drm.h>
 
 #include "Device.hpp"
 #include "Framebuffer.hpp"
@@ -43,6 +44,8 @@ namespace adapsurf {
 			 * TODO This shouldn't be hard wired.
 			 */
 			const char* _driDeviceFilePathName = "/dev/dri/card0";
+
+
 	};
 }
 
