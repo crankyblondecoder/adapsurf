@@ -1,8 +1,8 @@
 #ifndef ADS_DRM_DEVICE_H
 #define ADS_DRM_DEVICE_H
 
-#include <libdrm/drm.h>
 #include <xf86drm.h>
+#include <xf86drmMode.h>
 
 #include "Device.hpp"
 #include "Framebuffer.hpp"
