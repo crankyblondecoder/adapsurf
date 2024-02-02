@@ -3,6 +3,8 @@
 
 export objFiles := DrmDevice.o Exception.o Surface.o
 
+export libs = drm
+
 export debugLibName = libAdapSurf_debug.so.0.1
 export releaseLibName = libAdapSurf.so.0.1
 

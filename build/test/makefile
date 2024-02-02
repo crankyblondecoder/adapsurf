@@ -17,7 +17,7 @@ test : adsUnitTest.o adsTest.cpp
 	@echo
 	@echo "*** Building - Test ***"
 	@echo
-	$(cname) $(cflags) -o adsTest $(sourceLocn)adsTest.cpp adsUnitTest.o $(addprefix ../debug/, $(objFiles))
+	$(cname) $(cflags) -l$(libs) -o adsTest $(sourceLocn)adsTest.cpp adsUnitTest.o $(addprefix ../debug/, $(objFiles))
 	@echo
 	@echo
 
