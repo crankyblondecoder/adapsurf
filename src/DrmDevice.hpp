@@ -1,6 +1,8 @@
 #ifndef ADS_DRM_DEVICE_H
 #define ADS_DRM_DEVICE_H
 
+#include <string>
+
 // You may need to symlink drm.h and drm_mode.h into /usr/include/ for the following to work.
 #include <xf86drm.h>
 #include <xf86drmMode.h>
@@ -18,7 +20,7 @@ namespace adapsurf {
 		public:
 
 			~DrmDevice();
-			DrmDevice();
+			DrmDevice(unsigned cardNumber);
 
 			/**
 			 * Generate a framebuffer for rendering to this device.
@@ -49,7 +51,7 @@ namespace adapsurf {
 			 * Full pathname of the dri device file.
 			 * TODO This shouldn't be hard wired.
 			 */
-			const char* _driDeviceFilePathName = "/dev/dri/card1";
+			std::string _driDeviceFilePathName;
 
 			/** This contains "information about the current display configuration". */
 			drmModeResPtr _drmResources;

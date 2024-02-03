@@ -31,7 +31,7 @@ class adsDrmDeviceUnitTest : public adsUnitTest
 
 			try
 			{
-				device = new DrmDevice();
+				device = new DrmDevice(1);
 			}
 			catch(const Exception& ex)
 			{
