@@ -6,10 +6,10 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-	cout << "\n" << "*** Starting Adapsurf Unit Tests ***" << "\n\n";
+	cout << "\n*** Starting Adapsurf Unit Tests ***\n\n";
 
-	adsDrmDeviceUnitTest vectorUnitTest;
-	vectorUnitTest.run();
+	adsDrmDeviceUnitTest drmDeviceTest;
+	drmDeviceTest.run();
 
-	cout << "\n" << "*** Adapsurf Unit Tests complete ***" << "\n";
+	cout << "\n*** Adapsurf Unit Tests complete ***\n";
 }
