@@ -1,6 +1,8 @@
 # libAdapSurf Source Directory Debug Makefile
 # -------------------------------------------
 
+# NOTE: Put required libs last in the build so Debian based systems don't cry.
+
 # Tell make to search other paths. Separate multiple with ":"
 VPATH = ../../src/
 
@@ -15,7 +17,7 @@ release : $(objFiles)
 	@echo
 	@echo "*** Building - Release ***"
 	@echo
-	$(cname) $(cflags) -shared -o ../$(releaseLibName) $(objFiles)
+	$(cname) $(cflags) -shared -o ../$(releaseLibName) $(objFiles) -l$(libs)
 	@echo
 	@echo
 

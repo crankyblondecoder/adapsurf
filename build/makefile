@@ -3,6 +3,7 @@
 
 export objFiles := DrmDevice.o Exception.o Surface.o
 
+# NOTE: Put required libs last in the build so Debian based systems don't cry.
 export libs = drm
 
 export debugLibName = libAdapSurf_debug.so.0.1
