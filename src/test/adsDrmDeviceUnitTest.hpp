@@ -6,6 +6,8 @@
 #include "../DrmDevice.hpp"
 #include "../Exception.hpp"
 
+extern int cardNumber;
+
 using namespace adapsurf;
 
 class adsDrmDeviceUnitTest : public adsUnitTest
@@ -31,7 +33,7 @@ class adsDrmDeviceUnitTest : public adsUnitTest
 
 			try
 			{
-				device = new DrmDevice(1);
+				device = new DrmDevice(cardNumber);
 			}
 			catch(const Exception& ex)
 			{
