@@ -1,5 +1,6 @@
-libAdapSurf.so.*
+libAdapSurf*
 make.dep
 *.[oa]
 *.dep
 adapSurfTest
+adsTest
