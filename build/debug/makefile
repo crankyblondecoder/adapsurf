@@ -15,7 +15,7 @@ debug : $(objFiles)
 	@echo
 	@echo "*** Building - Debug ***"
 	@echo
-	$(cname) $(cflags) -l$(libs) -shared -o ../$(debugLibName) $(objFiles)
+	$(cname) $(cflags) -shared -o ../$(debugLibName) $(objFiles) -l$(libs)
 	@echo
 	@echo
 
