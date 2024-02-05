@@ -99,12 +99,11 @@ void DrmDevice::enumerateResources()
 
 			if(connectPtr)
 			{
-				cout << "\tType:" << connectorTypeName(connectPtr -> connector_type);
+				cout << "\tType:" << connectorTypeName(connectPtr -> connector_type) << "\n";
 			}
 
 			drmModeFreeConnector(connectPtr);
 		}
-		cout << "\n\n";
 	}
 }
 
