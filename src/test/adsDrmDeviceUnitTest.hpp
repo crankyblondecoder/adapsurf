@@ -19,7 +19,7 @@ class adsDrmDeviceUnitTest : public adsUnitTest
 
 	protected:
 
-		virtual void runTests()
+		virtual void _runTests()
 		{
 			testDeviceConstruction();
 		}
@@ -43,19 +43,18 @@ class adsDrmDeviceUnitTest : public adsUnitTest
 				std::string msg("Exception during construction: ");
 				msg += ex.getErrorDescr();
 
-				notifyTestResult("DRM Device Tests", false, msg);
+				_notifyTestResult("DRM Device Tests", false, msg);
 			}
 
 			if(allPassed && verbosity > 0)
 			{
-				cout << "\n";
-				device -> enumerateResources();
+				device -> enumerateResources(_getLevel() + 1);
 				cout << "\n";
 			}
 
 			delete device;
 
 			// Catch all for all passed.
-			if(allPassed) notifyTestResult("DRM Device Construction", true, "All tests passed.");
+			if(allPassed) _notifyTestResult("DRM Device Construction", true, "All tests passed.");
 		}
 };

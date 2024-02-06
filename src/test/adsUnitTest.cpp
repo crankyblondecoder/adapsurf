@@ -13,21 +13,21 @@ adsUnitTest::adsUnitTest(const char* unitTestName) : _name{unitTestName}, _resul
 {
 }
 
-bool adsUnitTest::run(unsigned nestingLevel)
+bool adsUnitTest::run()
 {
-	cout << _indentTabs << "Running: " << _name << "\n";
+	cout << _indentTabs << "Running: " << _name << "\n\n";
 
 	// Run main tests first.
-	runTests();
+	_runTests();
 
 	// Post test run hook.
-	postRunTests();
+	_postRunTests();
 
 	// Run child tests after main tests so as to give main tests a chance to test for more broader conditions.
 	bool childResult;
 	for(int index = 0; index < _numChildUnitTests; index++)
 	{
-		childResult = _childUnitTests[index] -> run(nestingLevel);
+		childResult = _childUnitTests[index] -> run();
 		_result = _result && childResult;
 		// Stop on first failure.
 		if(!childResult) break;
@@ -36,11 +36,11 @@ bool adsUnitTest::run(unsigned nestingLevel)
 	// Output the overall result.
 	if(_result)
 	{
-		cout <<  _indentTabs << _name << " : " << PASS_STRING << "\n";
+		cout << "\n" << _indentTabs << _name << " : " << PASS_STRING << "\n\n";
 	}
 	else
 	{
-		cout <<  _indentTabs << _name << " : " << FAIL_STRING << "\n";
+		cout << "\n" <<  _indentTabs << _name << " : " << FAIL_STRING << "\n\n";
 	}
 
 	return _result;
@@ -54,10 +54,10 @@ bool adsUnitTest::getResult()
 void adsUnitTest::addChildUnitTest(adsUnitTest* childUnitTest)
 {
 	_childUnitTests[_numChildUnitTests++] = childUnitTest;
-	childUnitTest -> setLevel(_level + 1);
+	childUnitTest -> _setLevel(_level + 1);
 }
 
-void adsUnitTest::notifyTestResult(const char* testName, bool result, const std::string& resultMessage)
+void adsUnitTest::_notifyTestResult(const char* testName, bool result, const std::string& resultMessage)
 {
 	_result = _result && result;
 
@@ -75,14 +75,24 @@ void adsUnitTest::notifyTestResult(const char* testName, bool result, const std:
 	}
 }
 
-void adsUnitTest::setLevel(int level)
+unsigned adsUnitTest::_getLevel()
+{
+	return _level;
+}
+
+void adsUnitTest::_setLevel(unsigned level)
 {
 	_level = level;
 
 	// Pre-create tab output according to the nesting level.
 	_indentTabs = "";
-	for(int level = 0; level < _level; level++)
+	for(unsigned level = 0; level < _level; level++)
 	{
 		_indentTabs += "\t";
 	}
+}
+
+void adsUnitTest::_outputLevelIndentTabs()
+{
+	cout << _indentTabs;
 }

@@ -23,11 +23,9 @@ class adsUnitTest
 
 		/**
 		 * Run the unit test.
-		 * @param nestingLevel Gives an indicator as to how many levels down in the testing tree this is being run. Level 0
-		 *        is the root level.
 		 * @returns Unit test overall result.
 		 */
-		bool run(unsigned nestingLevel);
+		bool run();
 
 		/**
 		 * Get the result of running this unit test.
@@ -48,12 +46,12 @@ class adsUnitTest
 		 * Run the tests that make up this unit test.
 		 * Must be implemented by subclass.
 		 */
-		virtual void runTests() = 0;
+		virtual void _runTests() = 0;
 
 		/**
 		 * Hook to allow post processing after tests are run.
 		 */
-		virtual void postRunTests() {};
+		virtual void _postRunTests() {};
 
 		/**
 		 * Indicate pass/fail state of individual test that is part of overall unit test.
@@ -62,14 +60,25 @@ class adsUnitTest
 		 * @param result True for test passing. False if it didn't.
 		 * @param resultMessage Message to annotate result.
 		 */
-		void notifyTestResult(const char* testName, bool result, const std::string& resultMessage);
+		void _notifyTestResult(const char* testName, bool result, const std::string& resultMessage);
+
+		/**
+		 * Get the nested level of this unit test.
+		 * ie How far down the unit test hierachy it resides.
+		 */
+		unsigned _getLevel();
 
 		/**
 		 * Set the nested level of this unit test.
 		 * ie How far down the unit test hierachy it resides.
 		 * @param level Nested level to set.
 		 */
-		void setLevel(int level);
+		void _setLevel(unsigned level);
+
+		/**
+		 * Output tabs to standard out that match the nested level of this test.
+		 */
+		void _outputLevelIndentTabs();
 
 	private:
 
@@ -80,7 +89,7 @@ class adsUnitTest
 		bool _result;
 
 		/** The nested level of the unit test. Ie where in the tree it resides. */
-		int _level;
+		unsigned _level;
 
 		/** Pre-calculated string containing indent tabs. */
 		std::string _indentTabs;

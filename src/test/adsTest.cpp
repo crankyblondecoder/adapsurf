@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 	if(argc > 2)
 	{
 		// Assume second param is the verbosity number.
-		verbosity = atoi(argv[1]);
+		verbosity = atoi(argv[2]);
 	}
 
 	cout << "\n*** Starting Adapsurf Unit Tests ***\n\n";
@@ -29,5 +29,5 @@ int main(int argc, char* argv[])
 	adsDrmDeviceUnitTest drmDeviceTest;
 	drmDeviceTest.run();
 
-	cout << "\n*** Adapsurf Unit Tests complete ***\n";
+	cout << "*** Adapsurf Unit Tests complete ***\n";
 }

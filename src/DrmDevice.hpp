@@ -37,8 +37,9 @@ namespace adapsurf {
 
 			/**
 			 * Describe the available DRM resources on std out.
+			 * @param prefTabNum Number of tabs to prefix the output with.
 			 */
-			void enumerateResources();
+			void enumerateResources(unsigned prefTabNum);
 
 		protected:
 

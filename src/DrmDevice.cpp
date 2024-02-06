@@ -16,24 +16,27 @@ struct typeName
 
 static const struct typeName connectorTypeNames[] =
 {
-    { DRM_MODE_CONNECTOR_Unknown, "unknown" },
-    { DRM_MODE_CONNECTOR_VGA, "VGA" },
-    { DRM_MODE_CONNECTOR_DVII, "DVI-I" },
-    { DRM_MODE_CONNECTOR_DVID, "DVI-D" },
-    { DRM_MODE_CONNECTOR_DVIA, "DVI-A" },
-    { DRM_MODE_CONNECTOR_Composite, "composite" },
-    { DRM_MODE_CONNECTOR_SVIDEO, "s-video" },
-    { DRM_MODE_CONNECTOR_LVDS, "LVDS" },
-    { DRM_MODE_CONNECTOR_Component, "component" },
-    { DRM_MODE_CONNECTOR_9PinDIN, "9-pin DIN" },
-    { DRM_MODE_CONNECTOR_DisplayPort, "DP" },
-    { DRM_MODE_CONNECTOR_HDMIA, "HDMI-A" },
-    { DRM_MODE_CONNECTOR_HDMIB, "HDMI-B" },
-    { DRM_MODE_CONNECTOR_TV, "TV" },
-    { DRM_MODE_CONNECTOR_eDP, "eDP" },
-    { DRM_MODE_CONNECTOR_VIRTUAL, "Virtual" },
-    { DRM_MODE_CONNECTOR_DSI, "DSI" },
-    { DRM_MODE_CONNECTOR_DPI, "DPI" }
+    {DRM_MODE_CONNECTOR_Unknown, "unknown"},
+    {DRM_MODE_CONNECTOR_VGA, "VGA"},
+    {DRM_MODE_CONNECTOR_DVII, "DVI-I"},
+    {DRM_MODE_CONNECTOR_DVID, "DVI-D"},
+    {DRM_MODE_CONNECTOR_DVIA, "DVI-A"},
+    {DRM_MODE_CONNECTOR_Composite, "composite"},
+    {DRM_MODE_CONNECTOR_SVIDEO, "s-video"},
+    {DRM_MODE_CONNECTOR_LVDS, "LVDS"},
+    {DRM_MODE_CONNECTOR_Component, "component"},
+    {DRM_MODE_CONNECTOR_9PinDIN, "9-pin DIN"},
+    {DRM_MODE_CONNECTOR_DisplayPort, "DP"},
+    {DRM_MODE_CONNECTOR_HDMIA, "HDMI-A"},
+    {DRM_MODE_CONNECTOR_HDMIB, "HDMI-B"},
+    {DRM_MODE_CONNECTOR_TV, "TV"},
+    {DRM_MODE_CONNECTOR_eDP, "eDP"},
+    {DRM_MODE_CONNECTOR_VIRTUAL, "Virtual"},
+    {DRM_MODE_CONNECTOR_DSI, "DSI"},
+    {DRM_MODE_CONNECTOR_DPI, "DPI"},
+	{DRM_MODE_CONNECTOR_WRITEBACK, "WRITEBACK"},
+	{DRM_MODE_CONNECTOR_SPI, "SPI"},
+	{DRM_MODE_CONNECTOR_USB, "USB"}
 };
 
 const char* connectorTypeName(unsigned int type)
@@ -78,28 +81,46 @@ DrmDevice::DrmDevice(unsigned cardNumber)
 	}
 }
 
-void DrmDevice::enumerateResources()
+void DrmDevice::enumerateResources(unsigned prefTabNum)
 {
+	string prefixTabs;
+
+	for(unsigned index = 0; index < prefTabNum; index++)
+	{
+		prefixTabs += "\t";
+	}
+
 	if(_drmResources)
 	{
-		cout << "DRM Resources\n";
-		cout << "-------------\n";
-		cout << "Device: " << _driDeviceFilePathName << "\n";
-		cout << "Min Width: " << _drmResources -> min_width << "  Max Width: " << _drmResources -> max_width << "\n";
-		cout << "Min Height: " << _drmResources -> min_height << "  Max Height: " << _drmResources -> max_height << "\n";
-		cout << "Framebuffer Count: " << _drmResources -> count_fbs << "\n";
-		cout << "CRTC Count: " << _drmResources -> count_crtcs << "\n";
-		cout << "Connector Count: " << _drmResources -> count_connectors << "\n";
-		cout << "Encoder Count: " << _drmResources -> count_encoders << "\n\n";
+		cout << prefixTabs << "DRM Resources\n";
+		cout << prefixTabs << "-------------\n";
+		cout << prefixTabs << "Device: " << _driDeviceFilePathName << "\n";
+		cout << prefixTabs << "Min Width: " << _drmResources -> min_width << "  Max Width: " << _drmResources -> max_width << "\n";
+		cout << prefixTabs << "Min Height: " << _drmResources -> min_height << "  Max Height: " << _drmResources -> max_height << "\n";
+		cout << prefixTabs << "Framebuffer Count: " << _drmResources -> count_fbs << "\n";
+		cout << prefixTabs << "CRTC Count: " << _drmResources -> count_crtcs << "\n";
+		cout << prefixTabs << "Connector Count: " << _drmResources -> count_connectors << "\n";
+		cout << prefixTabs << "Encoder Count: " << _drmResources -> count_encoders << "\n\n";
 
-		cout << "Connector Info:\n";
+		cout << prefixTabs << "Connector Info:\n";
 		for(int index = 0; index < _drmResources -> count_connectors; index++)
 		{
 			drmModeConnectorPtr connectPtr = drmModeGetConnector(_devFd, _drmResources -> connectors[index]);
 
 			if(connectPtr)
 			{
-				cout << "\tType:" << connectorTypeName(connectPtr -> connector_type) << "\n";
+				cout << prefixTabs << "\tType:" << connectorTypeName(connectPtr -> connector_type) << "\n";
+				cout << prefixTabs << "\tmmWidth:" << connectPtr -> mmWidth << "\n";
+				cout << prefixTabs << "\tmmHeight:" << connectPtr -> mmHeight << "\n";
+
+				if(connectPtr -> connection == drmModeConnection::DRM_MODE_CONNECTED)
+				{
+					cout << prefixTabs << "\tConnectionStatus: CONNECTED" << "\n";
+				}
+				else if(connectPtr -> connection == drmModeConnection::DRM_MODE_DISCONNECTED)
+				{
+					cout << prefixTabs << "\tConnectionStatus: DISCONNECTED" << "\n";
+				}
 			}
 
 			drmModeFreeConnector(connectPtr);
