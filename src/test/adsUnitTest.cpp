@@ -13,7 +13,7 @@ adsUnitTest::adsUnitTest(const char* unitTestName) : _name{unitTestName}, _resul
 {
 }
 
-bool adsUnitTest::run()
+bool adsUnitTest::run(unsigned nestingLevel)
 {
 	cout << _indentTabs << "Running: " << _name << "\n";
 
@@ -27,7 +27,7 @@ bool adsUnitTest::run()
 	bool childResult;
 	for(int index = 0; index < _numChildUnitTests; index++)
 	{
-		childResult = _childUnitTests[index] -> run();
+		childResult = _childUnitTests[index] -> run(nestingLevel);
 		_result = _result && childResult;
 		// Stop on first failure.
 		if(!childResult) break;

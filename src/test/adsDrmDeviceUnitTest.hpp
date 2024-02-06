@@ -7,6 +7,7 @@
 #include "../Exception.hpp"
 
 extern int cardNumber;
+extern int verbosity;
 
 using namespace adapsurf;
 
@@ -45,9 +46,12 @@ class adsDrmDeviceUnitTest : public adsUnitTest
 				notifyTestResult("DRM Device Tests", false, msg);
 			}
 
-			cout << "\n";
-			if(allPassed) device -> enumerateResources();
-			cout << "\n";
+			if(allPassed && verbosity > 0)
+			{
+				cout << "\n";
+				device -> enumerateResources();
+				cout << "\n";
+			}
 
 			delete device;
 

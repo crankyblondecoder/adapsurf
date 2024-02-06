@@ -23,9 +23,11 @@ class adsUnitTest
 
 		/**
 		 * Run the unit test.
+		 * @param nestingLevel Gives an indicator as to how many levels down in the testing tree this is being run. Level 0
+		 *        is the root level.
 		 * @returns Unit test overall result.
 		 */
-		bool run();
+		bool run(unsigned nestingLevel);
 
 		/**
 		 * Get the result of running this unit test.
