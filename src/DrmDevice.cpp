@@ -121,6 +121,19 @@ void DrmDevice::enumerateResources(unsigned prefTabNum)
 				{
 					cout << prefixTabs << "\tConnectionStatus: DISCONNECTED" << "\n";
 				}
+
+				drmModeModeInfo mode;
+
+				for(int modeIndex = 0; modeIndex < connectPtr -> count_modes; modeIndex++)
+				{
+					mode = connectPtr -> modes[modeIndex];
+
+					if(mode.type & DRM_MODE_TYPE_PREFERRED)
+					{
+						cout << prefixTabs << "\tPref horiz display size: " << mode.hdisplay << "\n";
+						cout << prefixTabs << "\tPref vert display size: " << mode.vdisplay << "\n";
+					}
+				}
 			}
 
 			drmModeFreeConnector(connectPtr);
