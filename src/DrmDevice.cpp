@@ -128,10 +128,24 @@ void DrmDevice::enumerateResources(unsigned prefTabNum)
 				{
 					mode = connectPtr -> modes[modeIndex];
 
+					cout << prefixTabs << "\tMode Index: " << modeIndex << "\n";
+
 					if(mode.type & DRM_MODE_TYPE_PREFERRED)
 					{
-						cout << prefixTabs << "\tPref horiz display size: " << mode.hdisplay << "\n";
-						cout << prefixTabs << "\tPref vert display size: " << mode.vdisplay << "\n";
+						cout << prefixTabs << "\t\tPref horiz display size: " << mode.hdisplay << "\n";
+						cout << prefixTabs << "\t\tPref vert display size: " << mode.vdisplay << "\n";
+					}
+
+					if(mode.type & DRM_MODE_TYPE_DRIVER)
+					{
+						cout << prefixTabs << "\t\tDriver horiz display size: " << mode.hdisplay << "\n";
+						cout << prefixTabs << "\t\tDriver vert display size: " << mode.vdisplay << "\n";
+					}
+
+					if(mode.type & DRM_MODE_TYPE_USERDEF)
+					{
+						cout << prefixTabs << "\t\tUserdef horiz display size: " << mode.hdisplay << "\n";
+						cout << prefixTabs << "\t\tUserdef vert display size: " << mode.vdisplay << "\n";
 					}
 				}
 			}
