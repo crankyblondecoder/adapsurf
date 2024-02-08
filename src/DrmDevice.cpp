@@ -1,3 +1,4 @@
+#include <cstring>
 #include <fcntl.h>
 #include <iostream>
 #include <string>
@@ -51,6 +52,9 @@ const char* connectorTypeName(unsigned int type)
 
 DrmDevice::~DrmDevice()
 {
+	// TODO ... Destroy any allocated frame buffers.
+	blah;
+
 	if(_drmResources) drmModeFreeResources(_drmResources);
 
 	if(_devFd >= 0) close(_devFd);
@@ -83,7 +87,9 @@ DrmDevice::DrmDevice(unsigned cardNumber)
 
 Framebuffer* DrmDevice::generateFramebuffer(unsigned width, unsigned height)
 {
+	struct drm_mode_create_dumb createReq;
 
+	std::memset(&createReq, 0, sizeof(createReq));
 }
 
 void DrmDevice::destroyFramebuffer(Framebuffer* fbuf)
