@@ -81,6 +81,16 @@ DrmDevice::DrmDevice(unsigned cardNumber)
 	}
 }
 
+Framebuffer* DrmDevice::generateFramebuffer(unsigned width, unsigned height)
+{
+
+}
+
+void DrmDevice::destroyFramebuffer(Framebuffer* fbuf)
+{
+
+}
+
 void DrmDevice::enumerateResources(unsigned prefTabNum)
 {
 	string prefixTabs;
