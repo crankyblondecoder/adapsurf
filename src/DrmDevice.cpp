@@ -28,7 +28,8 @@ static const struct typeName connectorTypeNames[] =
     {DRM_MODE_CONNECTOR_Component, "component"},
     {DRM_MODE_CONNECTOR_9PinDIN, "9-pin DIN"},
     {DRM_MODE_CONNECTOR_DisplayPort, "DP"},
-    {DRM_MODE_CONNECTOR_HDMIA, "HDMI-A"},
+
+	{DRM_MODE_CONNECTOR_HDMIA, "HDMI-A"},
     {DRM_MODE_CONNECTOR_HDMIB, "HDMI-B"},
     {DRM_MODE_CONNECTOR_TV, "TV"},
     {DRM_MODE_CONNECTOR_eDP, "eDP"},
@@ -53,7 +54,6 @@ const char* connectorTypeName(unsigned int type)
 DrmDevice::~DrmDevice()
 {
 	// TODO ... Destroy any allocated frame buffers.
-	blah;
 
 	if(_drmResources) drmModeFreeResources(_drmResources);
 
@@ -75,6 +75,8 @@ DrmDevice::DrmDevice(unsigned cardNumber)
 		throw Exception(Exception::Error::DRM_BAD_DEV_FILE, msg);
 	}
 
+	// Get available drm resources.
+
 	_drmResources = drmModeGetResources(_devFd);
 
 	if(_drmResources == 0)
@@ -83,8 +85,35 @@ DrmDevice::DrmDevice(unsigned cardNumber)
 
 		throw Exception(Exception::Error::DRM_GET_RESOURCES_FAIL, msg);
 	}
+
+	// Get dumb buffer capabilities.
+
+	uint64_t capValue;
+
+	if(!drmGetCap(_devFd, DRM_CAP_DUMB_BUFFER, &capValue)) {
+
+		_dumbBufferSupport = capValue > 0;
+
+	} else {
+
+		std::string msg("Could not get drm capability: DRM_CAP_DUMB_BUFFER");
+
+		throw Exception(Exception::Error::DRM_GET_CAP_FAIL, msg);
+	}
+
+	if(!drmGetCap(_devFd, DRM_CAP_DUMB_PREFERRED_DEPTH, &capValue)) {
+
+		_dumbBufferPrefDepth = capValue;
+
+	} else {
+
+		std::string msg("Could not get drm capability: DRM_CAP_DUMB_PREFERRED_DEPTH");
+
+		throw Exception(Exception::Error::DRM_GET_CAP_FAIL, msg);
+	}
 }
 
+/*
 Framebuffer* DrmDevice::generateFramebuffer(unsigned width, unsigned height)
 {
 	struct drm_mode_create_dumb createReq;
@@ -96,7 +125,7 @@ void DrmDevice::destroyFramebuffer(Framebuffer* fbuf)
 {
 
 }
-
+*/
 void DrmDevice::enumerateResources(unsigned prefTabNum)
 {
 	string prefixTabs;
@@ -111,6 +140,8 @@ void DrmDevice::enumerateResources(unsigned prefTabNum)
 		cout << prefixTabs << "DRM Resources\n";
 		cout << prefixTabs << "-------------\n";
 		cout << prefixTabs << "Device: " << _driDeviceFilePathName << "\n";
+		cout << prefixTabs << "Dumb buffer support: " << _dumbBufferSupport << "\n";
+		cout << prefixTabs << "Dumb buffer pref depth: " << _dumbBufferPrefDepth << "\n";
 		cout << prefixTabs << "Min Width: " << _drmResources -> min_width << "  Max Width: " << _drmResources -> max_width << "\n";
 		cout << prefixTabs << "Min Height: " << _drmResources -> min_height << "  Max Height: " << _drmResources -> max_height << "\n";
 		cout << prefixTabs << "Framebuffer Count: " << _drmResources -> count_fbs << "\n";

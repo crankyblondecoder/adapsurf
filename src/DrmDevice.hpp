@@ -56,6 +56,12 @@ namespace adapsurf {
 
 			/** This contains "information about the current display configuration". */
 			drmModeResPtr _drmResources;
+
+			/** Whether there is dumb buffer support. DRM_CAP_DUMB_BUFFER*/
+			bool _dumbBufferSupport;
+
+			/** The reported preferred depth of dumb buffers. DRM_CAP_DUMB_PREFERRED_DEPTH */
+			uint64_t _dumbBufferPrefDepth;
 	};
 }
 

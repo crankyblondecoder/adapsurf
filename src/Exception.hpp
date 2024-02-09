@@ -20,7 +20,9 @@ namespace adapsurf {
 				/** Could not open DRM device file. */
 				DRM_BAD_DEV_FILE,
 				/** Failed to get any DRM resources. */
-				DRM_GET_RESOURCES_FAIL
+				DRM_GET_RESOURCES_FAIL,
+				/** Failed to get a DRM capability. */
+				DRM_GET_CAP_FAIL
 			};
 
 			virtual ~Exception(){}
