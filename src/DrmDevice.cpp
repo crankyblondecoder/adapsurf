@@ -140,7 +140,7 @@ void DrmDevice::enumerateResources(unsigned prefTabNum)
 		cout << prefixTabs << "DRM Resources\n";
 		cout << prefixTabs << "-------------\n";
 		cout << prefixTabs << "Device: " << _driDeviceFilePathName << "\n";
-		cout << prefixTabs << "Dumb buffer support: " << _dumbBufferSupport << "\n";
+		cout << prefixTabs << "Dumb buffer support: " << (_dumbBufferSupport ? "true" : "false") << "\n";
 		cout << prefixTabs << "Dumb buffer pref depth: " << _dumbBufferPrefDepth << "\n";
 		cout << prefixTabs << "Min Width: " << _drmResources -> min_width << "  Max Width: " << _drmResources -> max_width << "\n";
 		cout << prefixTabs << "Min Height: " << _drmResources -> min_height << "  Max Height: " << _drmResources -> max_height << "\n";
