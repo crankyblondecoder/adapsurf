@@ -113,19 +113,21 @@ DrmDevice::DrmDevice(unsigned cardNumber)
 	}
 }
 
-/*
 Framebuffer* DrmDevice::generateFramebuffer(unsigned width, unsigned height)
 {
 	struct drm_mode_create_dumb createReq;
 
 	std::memset(&createReq, 0, sizeof(createReq));
+
+	// TODO ... temp
+	return 0;
 }
 
 void DrmDevice::destroyFramebuffer(Framebuffer* fbuf)
 {
-
+	// TODO ...
 }
-*/
+
 void DrmDevice::enumerateResources(unsigned prefTabNum)
 {
 	string prefixTabs;
@@ -200,10 +202,4 @@ void DrmDevice::enumerateResources(unsigned prefTabNum)
 			drmModeFreeConnector(connectPtr);
 		}
 	}
-}
-
-Framebuffer* DrmDevice::generateFramebuffer(unsigned width, unsigned height)
-{
-	// TODO ... temp
-	return 0;
 }
