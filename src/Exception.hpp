@@ -22,7 +22,9 @@ namespace adapsurf {
 				/** Failed to get any DRM resources. */
 				DRM_GET_RESOURCES_FAIL,
 				/** Failed to get a DRM capability. */
-				DRM_GET_CAP_FAIL
+				DRM_GET_CAP_FAIL,
+				/** Failed to generate a requested framebuffer. */
+				DRM_GEN_FRAME_BUFFER_FAIL
 			};
 
 			virtual ~Exception(){}

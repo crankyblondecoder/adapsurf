@@ -115,9 +115,21 @@ DrmDevice::DrmDevice(unsigned cardNumber)
 
 Framebuffer* DrmDevice::generateFramebuffer(unsigned width, unsigned height)
 {
+	// TODO ... Somehow use a particular connector?
+	blah
+
+	if(!_dumbBufferSupport)
+	{
+		std::string msg("Dumb buffer is not supported. Could not create framebuffer.");
+
+		throw Exception(Exception::Error::DRM_GET_CAP_FAIL, msg);
+	}
+
 	struct drm_mode_create_dumb createReq;
 
 	std::memset(&createReq, 0, sizeof(createReq));
+
+	createReq.width =
 
 	// TODO ... temp
 	return 0;
