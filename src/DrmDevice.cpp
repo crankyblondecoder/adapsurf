@@ -60,7 +60,7 @@ DrmDevice::~DrmDevice()
 	if(_devFd >= 0) close(_devFd);
 }
 
-DrmDevice::DrmDevice(unsigned cardNumber)
+DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
 {
 	_driDeviceFilePathName = "/dev/dri/card";
 	_driDeviceFilePathName += to_string(cardNumber);
@@ -111,6 +111,9 @@ DrmDevice::DrmDevice(unsigned cardNumber)
 
 		throw Exception(Exception::Error::DRM_GET_CAP_FAIL, msg);
 	}
+
+	// TODO ... Process requested connector.
+	blah
 }
 
 Framebuffer* DrmDevice::generateFramebuffer(unsigned width, unsigned height)

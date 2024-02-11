@@ -20,7 +20,12 @@ namespace adapsurf {
 		public:
 
 			~DrmDevice();
-			DrmDevice(unsigned cardNumber);
+
+			/**
+			 * @param cardNumber Device file card number. This is appended to "/dev/dri/card"
+			 * @param connectorIndex Index of connector (display) to use. -1 To use the first available connected connector.
+			 */
+			DrmDevice(unsigned cardNumber, int connectorIndex);
 
 			/**
 			 * Generate a framebuffer for rendering to this device.
@@ -48,9 +53,11 @@ namespace adapsurf {
 			/** DRM file descriptor. */
 			int _devFd;
 
+			/** Index in connectors array of the connector to use. */
+			int _connectorIndex;
+
 			/**
 			 * Full pathname of the dri device file.
-			 * TODO This shouldn't be hard wired.
 			 */
 			std::string _driDeviceFilePathName;
 
