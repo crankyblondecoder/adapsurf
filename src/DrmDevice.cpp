@@ -112,14 +112,44 @@ DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
 		throw Exception(Exception::Error::DRM_GET_CAP_FAIL, msg);
 	}
 
-	// TODO ... Process requested connector.
-	blah
+	// The requested connector is processed during framebuffer generation.
+	if(connectorIndex < 0)
+	{
+		_connectorIndex = -1;
+
+		// Look for the first connected connector.
+		for(int index = 0; index < _drmResources -> count_connectors; index++)
+		{
+			drmModeConnectorPtr connectPtr = drmModeGetConnector(_devFd, _drmResources -> connectors[index]);
+
+			if(connectPtr && connectPtr -> connection == drmModeConnection::DRM_MODE_CONNECTED)
+			{
+				_connectorIndex = index;
+				break;
+			}
+		}
+
+		if(_connectorIndex == -1)
+		{
+			std::string msg("Could not find a suitable, connected, default connector.");
+
+			throw Exception(Exception::Error::DRM_GET_DEFAULT_CONNECT_FAIL, msg);
+		}
+	}
+	else
+	{
+		_connectorIndex = connectorIndex;
+	}
 }
 
 Framebuffer* DrmDevice::generateFramebuffer(unsigned width, unsigned height)
 {
-	// TODO ... Somehow use a particular connector?
-	blah
+	if(_connectorIndex < 0)
+	{
+		std::string msg("Connector index has not been defined.");
+
+		throw Exception(Exception::Error::DRM_GEN_FRAME_BUFFER_FAIL, msg);
+	}
 
 	if(!_dumbBufferSupport)
 	{
@@ -128,9 +158,20 @@ Framebuffer* DrmDevice::generateFramebuffer(unsigned width, unsigned height)
 		throw Exception(Exception::Error::DRM_GET_CAP_FAIL, msg);
 	}
 
+	drmModeConnectorPtr connectPtr = drmModeGetConnector(_devFd, _drmResources -> connectors[_connectorIndex]);
+
+	if(!connectPtr)
+	{
+		std::string msg("Unable to get connector information. Could not create framebuffer.");
+
+		throw Exception(Exception::Error::DRM_GEN_FRAME_BUFFER_FAIL, msg);
+	}
+
 	struct drm_mode_create_dumb createReq;
 
 	std::memset(&createReq, 0, sizeof(createReq));
+
+	// TODO ... Framebuffer stride must be calculated by Cairo and reflected in the actual width requested.
 
 	createReq.width =
 
