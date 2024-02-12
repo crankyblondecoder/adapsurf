@@ -204,6 +204,8 @@ Framebuffer* DrmDevice::generateFramebuffer()
 
 	if(error < 0)
 	{
+		drmModeDestroyDumbBuffer(_devFd, dbHandle);
+
 		std::string msg("Error while adding dumb framebuffer: ");
 		msg += error;
 		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);

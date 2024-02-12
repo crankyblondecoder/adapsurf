@@ -1,7 +1,7 @@
 # libAdapSurf Root Makefile
 # -------------------------
 
-export objFiles := DrmDevice.o Exception.o Surface.o
+export objFiles := DrmDevice.o Exception.o Framebuffer.o Surface.o
 
 # NOTE: Put required libs last in the build so Debian based systems don't cry.
 export libs = drm

@@ -1,6 +1,8 @@
 #ifndef ADS_FRAMEBUFFER_H
 #define ADS_FRAMEBUFFER_H
 
+#include <cstdint>
+
 namespace adapsurf {
 
 	/**
@@ -12,7 +14,9 @@ namespace adapsurf {
 		public:
 
 			~Framebuffer();
-			Framebuffer();
+
+			Framebuffer(unsigned width, unsigned height, unsigned bpp, unsigned stride, unsigned pixelRatio,
+				uint8_t* buffer, unsigned bufferSize);
 
 		protected:
 
@@ -27,14 +31,17 @@ namespace adapsurf {
 			/** Number of bits per pixel. */
 			unsigned _bpp;
 
-			/** Number of bytes between the start of the rows. This exists to support Cairo. */
+			/** Number of bytes between the start of the rows. */
 			unsigned _stride;
 
 			/** The ratio of the width to height (width / height) of the pixels the framebuffer displays. */
 			float _pixelRatio;
 
+			/** The actual buffer memory. Not owned by this. */
+			uint8_t* _buffer;
+
 			/** Total amount of memory that was allocated to the framebuffer. In bytes. */
-			unsigned _sizeMemoryAlloc;
+			unsigned _bufferSize;
 	};
 }
 
