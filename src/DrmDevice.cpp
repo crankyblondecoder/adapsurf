@@ -82,7 +82,6 @@ DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
 	if(_drmResources == 0)
 	{
 		std::string msg("Could not get drm resources.");
-
 		throw Exception(Exception::Error::DRM_GET_RESOURCES_FAIL, msg);
 	}
 
@@ -97,7 +96,6 @@ DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
 	} else {
 
 		std::string msg("Could not get drm capability: DRM_CAP_DUMB_BUFFER");
-
 		throw Exception(Exception::Error::DRM_GET_CAP_FAIL, msg);
 	}
 
@@ -108,7 +106,6 @@ DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
 	} else {
 
 		std::string msg("Could not get drm capability: DRM_CAP_DUMB_PREFERRED_DEPTH");
-
 		throw Exception(Exception::Error::DRM_GET_CAP_FAIL, msg);
 	}
 
@@ -132,7 +129,6 @@ DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
 		if(_connectorIndex == -1)
 		{
 			std::string msg("Could not find a suitable, connected, default connector.");
-
 			throw Exception(Exception::Error::DRM_GET_DEFAULT_CONNECT_FAIL, msg);
 		}
 	}
@@ -142,38 +138,79 @@ DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
 	}
 }
 
-Framebuffer* DrmDevice::generateFramebuffer(unsigned width, unsigned height)
+Framebuffer* DrmDevice::generateFramebuffer()
 {
 	if(_connectorIndex < 0)
 	{
 		std::string msg("Connector index has not been defined.");
-
-		throw Exception(Exception::Error::DRM_GEN_FRAME_BUFFER_FAIL, msg);
+		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
 	}
 
 	if(!_dumbBufferSupport)
 	{
 		std::string msg("Dumb buffer is not supported. Could not create framebuffer.");
-
 		throw Exception(Exception::Error::DRM_GET_CAP_FAIL, msg);
+	}
+
+	if(_dumbBufferPrefDepth < 24)
+	{
+		std::string msg("A depth of less then 24 is not currently supported.");
+		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
 	}
 
 	drmModeConnectorPtr connectPtr = drmModeGetConnector(_devFd, _drmResources -> connectors[_connectorIndex]);
 
 	if(!connectPtr)
 	{
-		std::string msg("Unable to get connector information. Could not create framebuffer.");
-
-		throw Exception(Exception::Error::DRM_GEN_FRAME_BUFFER_FAIL, msg);
+		std::string msg("Unable to get connector information.");
+		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
 	}
 
-	struct drm_mode_create_dumb createReq;
+	if(!(connectPtr -> connection == drmModeConnection::DRM_MODE_CONNECTED))
+	{
+		std::string msg("Requested connection: ");
+		msg += _connectorIndex + " is not connected and cannot be safely queried.";
+		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
+	}
 
-	std::memset(&createReq, 0, sizeof(createReq));
+	if(connectPtr -> count_modes < 1)
+	{
+		std::string msg("At least one mode could not be found to get.");
+		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
+	}
 
-	// TODO ... Framebuffer stride must be calculated by Cairo and reflected in the actual width requested.
+	// For now just set width and height to the first mode found.
+	uint32_t width = connectPtr -> modes[0].hdisplay;
+	uint32_t height = connectPtr -> modes[0].vdisplay;
 
-	createReq.width =
+	// Populated by drm.
+	uint32_t dbHandle;
+	uint32_t stride;
+    uint64_t size;
+
+	int error = drmModeCreateDumbBuffer(_devFd, width, height, 32, 0, &dbHandle, &stride, & size);
+
+	if(error < 0)
+	{
+		std::string msg("Error during dumb buffer creation: ");
+		msg += error;
+		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
+	}
+
+	// Driver supplied framebuffer id.
+	uint32_t fb_id;
+
+	error = drmModeAddFB(_devFd, width, height, 24, 32, stride, dbHandle, &fb_id);
+
+	if(error < 0)
+	{
+		std::string msg("Error while adding dumb framebuffer: ");
+		msg += error;
+		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
+	}
+
+	// TODO ... Prepare dumb buffer for memory mapping
+	blah;
 
 	// TODO ... temp
 	return 0;

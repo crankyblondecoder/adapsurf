@@ -29,10 +29,9 @@ namespace adapsurf {
 
 			/**
 			 * Generate a framebuffer for rendering to this device.
-			 * @param width Width of framebuffer in pixels.
-			 * @param height Height of framebuffer in pixels.
+			 * @note This version only generates a framebuffer at driver native resolution.
 			 */
-			Framebuffer* generateFramebuffer(unsigned width, unsigned height);
+			Framebuffer* generateFramebuffer();
 
 			/**
 			 * Destroy a framebuffer generated from this device.
