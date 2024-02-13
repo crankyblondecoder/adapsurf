@@ -5,6 +5,7 @@
 #include <unistd.h>
 
 #include "DrmDevice.hpp"
+#include "DrmFramebuffer.hpp"
 #include "Exception.hpp"
 
 using namespace adapsurf;
@@ -53,8 +54,6 @@ const char* connectorTypeName(unsigned int type)
 
 DrmDevice::~DrmDevice()
 {
-	// TODO ... Destroy any allocated frame buffers.
-
 	if(_drmResources) drmModeFreeResources(_drmResources);
 
 	if(_devFd >= 0) close(_devFd);
@@ -183,39 +182,7 @@ Framebuffer* DrmDevice::generateFramebuffer()
 	uint32_t width = connectPtr -> modes[0].hdisplay;
 	uint32_t height = connectPtr -> modes[0].vdisplay;
 
-	// Populated by drm.
-	uint32_t dbHandle;
-	uint32_t stride;
-    uint64_t size;
-
-	int error = drmModeCreateDumbBuffer(_devFd, width, height, 32, 0, &dbHandle, &stride, & size);
-
-	if(error < 0)
-	{
-		std::string msg("Error during dumb buffer creation: ");
-		msg += error;
-		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
-	}
-
-	// Driver supplied framebuffer id.
-	uint32_t fb_id;
-
-	error = drmModeAddFB(_devFd, width, height, 24, 32, stride, dbHandle, &fb_id);
-
-	if(error < 0)
-	{
-		drmModeDestroyDumbBuffer(_devFd, dbHandle);
-
-		std::string msg("Error while adding dumb framebuffer: ");
-		msg += error;
-		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
-	}
-
-	// TODO ... Prepare dumb buffer for memory mapping
-	blah;
-
-	// TODO ... temp
-	return 0;
+	return new DrmFramebuffer(_devFd, width, height);
 }
 
 void DrmDevice::destroyFramebuffer(Framebuffer* fbuf)

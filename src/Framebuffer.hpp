@@ -15,6 +15,16 @@ namespace adapsurf {
 
 			~Framebuffer();
 
+			/**
+			 * Constructor
+			 * @param width The number of pixels wide to allocate.
+			 * @param height The number of pixels high to allocate.
+			 * @param bpp The number of bits per pixel.
+			 * @param stride The number of bytes between two consecutive lines.
+			 * @param pixelRatio Ratio of pixel width to height.
+			 * @param buffer The allocated buffer.
+			 * @param bufferSize The size of the allocated buffer in bytes.
+			 */
 			Framebuffer(unsigned width, unsigned height, unsigned bpp, unsigned stride, unsigned pixelRatio,
 				uint8_t* buffer, unsigned bufferSize);
 
