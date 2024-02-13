@@ -34,7 +34,7 @@ DrmFramebuffer::DrmFramebuffer(int deviceFd, unsigned width, unsigned height) : 
 	// Try and allocate the framebuffer.
 	_fbAlloc = false;
 
-	error = drmModeAddFB(deviceFd, width, height, 24, 32, _stride, _dbHandle, &fbId);
+	error = drmModeAddFB(deviceFd, width, height, 24, 32, _stride, _dbHandle, &_fbId);
 
 	if(error < 0)
 	{
@@ -49,5 +49,24 @@ DrmFramebuffer::DrmFramebuffer(int deviceFd, unsigned width, unsigned height) : 
 
 	_fbAlloc = true;
 
-	// TODO ... Prepare dumb buffer for memory mapping
+	// Prepare dumb buffer for memory mapping
+
+	uint64_t offset;
+
+	error = drmModeMapDumbBuffer(deviceFd, _dbHandle, &offset);
+
+	if(error < 0)
+	{
+		drmModeRmFB(deviceFd, _fbId);
+
+		_fbAlloc = false;
+
+		drmModeDestroyDumbBuffer(deviceFd, _dbAlloc);
+
+		_dbAlloc = false;
+
+		std::string msg("Error while adding dumb framebuffer: ");
+		msg += error;
+		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
+	}
 }

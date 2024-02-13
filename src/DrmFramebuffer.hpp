@@ -45,7 +45,7 @@ namespace adapsurf {
     	uint64_t _size;
 
 		/** Driver supplied framebuffer id. */
-		uint32_t fbId;
+		uint32_t _fbId;
 
 		/** Whether the framebuffer was allocated. */
 		bool _fbAlloc;
