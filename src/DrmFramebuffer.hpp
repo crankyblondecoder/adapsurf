@@ -15,7 +15,7 @@ namespace adapsurf {
 	{
 		public:
 
-			~DrmFramebuffer();
+			virtual ~DrmFramebuffer();
 
 			/**
 			 * Constructor
@@ -49,6 +49,12 @@ namespace adapsurf {
 
 		/** Whether the framebuffer was allocated. */
 		bool _fbAlloc;
+
+		/** The address where the framebuffer is mapped to */
+		void* _fbMapAddr;
+
+		/** Deallocate any resources held by this. */
+		void __dealloc();
 	};
 }
 

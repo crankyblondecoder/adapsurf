@@ -19,7 +19,7 @@ namespace adapsurf {
 	{
 		public:
 
-			~DrmDevice();
+			virtual ~DrmDevice();
 
 			/**
 			 * @param cardNumber Device file card number. This is appended to "/dev/dri/card"

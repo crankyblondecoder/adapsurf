@@ -13,7 +13,7 @@ namespace adapsurf {
 	{
 		public:
 
-			~Framebuffer();
+			virtual ~Framebuffer();
 
 			/**
 			 * Constructor

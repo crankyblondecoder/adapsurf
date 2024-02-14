@@ -1,5 +1,6 @@
 // You may need to symlink drm.h and drm_mode.h into /usr/include/ for the following to work.
 #include <string>
+#include <sys/mman.h>
 #include <xf86drm.h>
 #include <xf86drmMode.h>
 
@@ -10,9 +11,7 @@ using namespace adapsurf;
 
 DrmFramebuffer::~DrmFramebuffer()
 {
-	// TODO ... Free dumb buffer and frame buffer.
-
-	if(_dbAlloc) drmModeDestroyDumbBuffer(_deviceFd, _dbAlloc);
+	__dealloc();
 }
 
 DrmFramebuffer::DrmFramebuffer(int deviceFd, unsigned width, unsigned height) : _deviceFd{deviceFd}
@@ -38,9 +37,7 @@ DrmFramebuffer::DrmFramebuffer(int deviceFd, unsigned width, unsigned height) : 
 
 	if(error < 0)
 	{
-		drmModeDestroyDumbBuffer(deviceFd, _dbAlloc);
-
-		_dbAlloc = false;
+		__dealloc();
 
 		std::string msg("Error while adding dumb framebuffer: ");
 		msg += error;
@@ -57,16 +54,38 @@ DrmFramebuffer::DrmFramebuffer(int deviceFd, unsigned width, unsigned height) : 
 
 	if(error < 0)
 	{
-		drmModeRmFB(deviceFd, _fbId);
+		__dealloc();
 
-		_fbAlloc = false;
-
-		drmModeDestroyDumbBuffer(deviceFd, _dbAlloc);
-
-		_dbAlloc = false;
-
-		std::string msg("Error while adding dumb framebuffer: ");
+		std::string msg("Error while preparing dumb framebuffer for memory mapping: ");
 		msg += error;
 		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
+	}
+
+	_fbMapAddr = mmap(0, _size, PROT_READ | PROT_WRITE, MAP_SHARED, _deviceFd, offset);
+
+	if(_fbMapAddr == MAP_FAILED) {
+
+		__dealloc();
+
+		std::string msg("Error while memory mapping framebuffer: ");
+		msg += errno;
+		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
+	}
+}
+
+void DrmFramebuffer::__dealloc()
+{
+	if(_fbAlloc)
+	{
+		drmModeRmFB(_deviceFd, _fbId);
+		_fbAlloc = false;
+	}
+
+	_fbAlloc = false;
+
+	if(_dbAlloc)
+	{
+		drmModeDestroyDumbBuffer(_deviceFd, _dbAlloc);
+		_dbAlloc = false;
 	}
 }
