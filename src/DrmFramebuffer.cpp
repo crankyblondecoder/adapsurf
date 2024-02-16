@@ -79,8 +79,6 @@ DrmFramebuffer::DrmFramebuffer(int deviceFd, unsigned width, unsigned height, un
 	}
 
 	// If gets to here then the framebuffer has been successfully setup.
-
-
 }
 
 void DrmFramebuffer::__dealloc()

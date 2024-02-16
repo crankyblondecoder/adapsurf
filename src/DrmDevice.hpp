@@ -43,25 +43,29 @@ namespace adapsurf {
 
 		private:
 
-			/** DRM file descriptor. */
-			int _devFd;
-
-			/** Index in connectors array of the connector to use. */
-			int _connectorIndex;
-
-			/**
-			 * Full pathname of the dri device file.
-			 */
+			/** Full pathname of the dri device file. */
 			std::string _driDeviceFilePathName;
 
-			/** This contains "information about the current display configuration". */
+			/** DRM file descriptor. */
+			int _deviceFd;
+			bool _deviceFdAlloc;
+
+			/** This contains information about the current display configuration". */
 			drmModeResPtr _drmResources;
+			bool _drmResourcesAlloc;
+
+			/** Pointer to connector information for the connector this device interfaces to. */
+			drmModeConnectorPtr _connector;
+			bool _connectorAlloc;
 
 			/** Whether there is dumb buffer support. DRM_CAP_DUMB_BUFFER*/
 			bool _dumbBufferSupport;
 
 			/** The reported preferred depth of dumb buffers. DRM_CAP_DUMB_PREFERRED_DEPTH */
 			uint64_t _dumbBufferPrefDepth;
+
+			/** Deallocate any resources held by this. */
+			void __dealloc();
 	};
 }
 

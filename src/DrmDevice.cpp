@@ -54,19 +54,39 @@ const char* connectorTypeName(unsigned int type)
 
 DrmDevice::~DrmDevice()
 {
-	if(_drmResources) drmModeFreeResources(_drmResources);
+	__dealloc();
+}
 
-	if(_devFd >= 0) close(_devFd);
+void DrmDevice::__dealloc()
+{
+	if(_connectorAlloc)
+	{
+		drmModeFreeConnector(_connector);
+		_connectorAlloc = false;
+	}
+
+	if(_drmResourcesAlloc)
+	{
+ 		drmModeFreeResources(_drmResources);
+		_drmResourcesAlloc = false;
+	}
+
+	if(_deviceFdAlloc)
+	{
+		close(_deviceFd);
+		_deviceFdAlloc = false;
+	}
 }
 
 DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
+	: _deviceFdAlloc{false}, _drmResourcesAlloc{false}, _connectorAlloc{false}
 {
 	_driDeviceFilePathName = "/dev/dri/card";
 	_driDeviceFilePathName += to_string(cardNumber);
 
-	_devFd = open(_driDeviceFilePathName.c_str(), O_RDWR);
+	_deviceFd = open(_driDeviceFilePathName.c_str(), O_RDWR);
 
-	if(_devFd < 0)
+	if(_deviceFd < 0)
 	{
 		std::string msg("Could not open dri device: ");
 		msg += _driDeviceFilePathName;
@@ -74,35 +94,45 @@ DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
 		throw Exception(Exception::Error::DRM_BAD_DEV_FILE, msg);
 	}
 
+	_deviceFdAlloc = true;
+
 	// Get available drm resources.
 
-	_drmResources = drmModeGetResources(_devFd);
+	_drmResources = drmModeGetResources(_deviceFd);
 
 	if(_drmResources == 0)
 	{
+		__dealloc();
+
 		std::string msg("Could not get drm resources.");
 		throw Exception(Exception::Error::DRM_GET_RESOURCES_FAIL, msg);
 	}
+
+	_drmResourcesAlloc = true;
 
 	// Get dumb buffer capabilities.
 
 	uint64_t capValue;
 
-	if(!drmGetCap(_devFd, DRM_CAP_DUMB_BUFFER, &capValue)) {
+	if(!drmGetCap(_deviceFd, DRM_CAP_DUMB_BUFFER, &capValue)) {
 
 		_dumbBufferSupport = capValue > 0;
 
 	} else {
 
+		__dealloc();
+
 		std::string msg("Could not get drm capability: DRM_CAP_DUMB_BUFFER");
 		throw Exception(Exception::Error::DRM_GET_CAP_FAIL, msg);
 	}
 
-	if(!drmGetCap(_devFd, DRM_CAP_DUMB_PREFERRED_DEPTH, &capValue)) {
+	if(!drmGetCap(_deviceFd, DRM_CAP_DUMB_PREFERRED_DEPTH, &capValue)) {
 
 		_dumbBufferPrefDepth = capValue;
 
 	} else {
+
+		__dealloc();
 
 		std::string msg("Could not get drm capability: DRM_CAP_DUMB_PREFERRED_DEPTH");
 		throw Exception(Exception::Error::DRM_GET_CAP_FAIL, msg);
@@ -111,17 +141,15 @@ DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
 	// The requested connector is processed during framebuffer generation.
 	if(connectorIndex < 0)
 	{
-		_connectorIndex = -1;
-
 		// Look for the first connected connector.
 		for(int index = 0; index < _drmResources -> count_connectors; index++)
 		{
-			drmModeConnectorPtr connectPtr = drmModeGetConnector(_devFd, _drmResources -> connectors[index]);
+			drmModeConnectorPtr connectPtr = drmModeGetConnector(_deviceFd, _drmResources -> connectors[index]);
 
 			if(connectPtr && connectPtr -> connection == drmModeConnection::DRM_MODE_CONNECTED)
 			{
-				_connectorIndex = index;
-				drmModeFreeConnector(connectPtr);
+				_connector = connectPtr;
+				_connectorAlloc = true;
 				break;
 			}
 
@@ -160,7 +188,7 @@ Framebuffer* DrmDevice::generateFramebuffer()
 		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
 	}
 
-	drmModeConnectorPtr connectPtr = drmModeGetConnector(_devFd, _drmResources -> connectors[_connectorIndex]);
+	drmModeConnectorPtr connectPtr = drmModeGetConnector(_deviceFd, _drmResources -> connectors[_connectorIndex]);
 
 	if(!connectPtr)
 	{
@@ -189,10 +217,15 @@ Framebuffer* DrmDevice::generateFramebuffer()
 	uint32_t width = connectPtr -> modes[0].hdisplay;
 	uint32_t height = connectPtr -> modes[0].vdisplay;
 
+	// TODO ... To set a framebuffer as being displayed, the crtcId, connector pointer and mode pointer from the connector are required.
+	//          these must be the same for all framebuffers produced from this device.
+	//          Maybe this data should be created as part of the constructor?
+	blah;
+
 	// Free resources that are no longer needed.
 	drmModeFreeConnector(connectPtr);
 
-	return new DrmFramebuffer(_devFd, width, height, _dumbBufferPrefDepth, 32);
+	return new DrmFramebuffer(_deviceFd, width, height, _dumbBufferPrefDepth, 32);
 }
 
 void DrmDevice::enumerateResources(unsigned prefTabNum)
@@ -221,7 +254,7 @@ void DrmDevice::enumerateResources(unsigned prefTabNum)
 		cout << prefixTabs << "Connector Info:\n";
 		for(int index = 0; index < _drmResources -> count_connectors; index++)
 		{
-			drmModeConnectorPtr connectPtr = drmModeGetConnector(_devFd, _drmResources -> connectors[index]);
+			drmModeConnectorPtr connectPtr = drmModeGetConnector(_deviceFd, _drmResources -> connectors[index]);
 
 			if(connectPtr)
 			{
