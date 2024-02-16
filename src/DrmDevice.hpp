@@ -34,12 +34,6 @@ namespace adapsurf {
 			Framebuffer* generateFramebuffer();
 
 			/**
-			 * Destroy a framebuffer generated from this device.
-			 * @param fbuf Framebuffer to destroy. Must have been generated from this device.
-			 */
-			void destroyFramebuffer(Framebuffer* fbuf);
-
-			/**
 			 * Describe the available DRM resources on std out.
 			 * @param prefTabNum Number of tabs to prefix the output with.
 			 */

@@ -121,8 +121,11 @@ DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
 			if(connectPtr && connectPtr -> connection == drmModeConnection::DRM_MODE_CONNECTED)
 			{
 				_connectorIndex = index;
+				drmModeFreeConnector(connectPtr);
 				break;
 			}
+
+			drmModeFreeConnector(connectPtr);
 		}
 
 		if(_connectorIndex == -1)
@@ -167,6 +170,8 @@ Framebuffer* DrmDevice::generateFramebuffer()
 
 	if(!(connectPtr -> connection == drmModeConnection::DRM_MODE_CONNECTED))
 	{
+		drmModeFreeConnector(connectPtr);
+
 		std::string msg("Requested connection: ");
 		msg += _connectorIndex + " is not connected and cannot be safely queried.";
 		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
@@ -174,7 +179,9 @@ Framebuffer* DrmDevice::generateFramebuffer()
 
 	if(connectPtr -> count_modes < 1)
 	{
-		std::string msg("At least one mode could not be found to get.");
+		drmModeFreeConnector(connectPtr);
+
+		std::string msg("At least one connector mode could not be found.");
 		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
 	}
 
@@ -182,12 +189,10 @@ Framebuffer* DrmDevice::generateFramebuffer()
 	uint32_t width = connectPtr -> modes[0].hdisplay;
 	uint32_t height = connectPtr -> modes[0].vdisplay;
 
-	return new DrmFramebuffer(_devFd, width, height);
-}
+	// Free resources that are no longer needed.
+	drmModeFreeConnector(connectPtr);
 
-void DrmDevice::destroyFramebuffer(Framebuffer* fbuf)
-{
-	// TODO ...
+	return new DrmFramebuffer(_devFd, width, height, _dumbBufferPrefDepth, 32);
 }
 
 void DrmDevice::enumerateResources(unsigned prefTabNum)

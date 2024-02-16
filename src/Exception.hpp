@@ -19,6 +19,8 @@ namespace adapsurf {
 				UNKNOWN,
 				/** Could not open DRM device file. */
 				DRM_BAD_DEV_FILE,
+				/** Could not set this process as DRM master. */
+				DRM_CANT_SET_MASTER,
 				/** Failed to get any DRM resources. */
 				DRM_GET_RESOURCES_FAIL,
 				/** Failed to get a DRM capability. */

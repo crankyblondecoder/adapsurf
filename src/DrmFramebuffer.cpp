@@ -14,12 +14,18 @@ DrmFramebuffer::~DrmFramebuffer()
 	__dealloc();
 }
 
-DrmFramebuffer::DrmFramebuffer(int deviceFd, unsigned width, unsigned height) : _deviceFd{deviceFd}
+DrmFramebuffer::DrmFramebuffer(int deviceFd, unsigned width, unsigned height, unsigned depth, unsigned bpp)
+	: _deviceFd{deviceFd}
 {
+	_width = width;
+	_height = height;
+	_depth = depth;
+	_bpp = bpp;
+
 	// Try and allocate dumb buffer.
 	_dbAlloc = false;
 
-	int error = drmModeCreateDumbBuffer(deviceFd, width, height, 32, 0, &_dbHandle, &_stride, &_size);
+	int error = drmModeCreateDumbBuffer(deviceFd, width, height, bpp, 0, &_dbHandle, &_stride, &_size);
 
 	if(error < 0)
 	{
@@ -33,7 +39,7 @@ DrmFramebuffer::DrmFramebuffer(int deviceFd, unsigned width, unsigned height) : 
 	// Try and allocate the framebuffer.
 	_fbAlloc = false;
 
-	error = drmModeAddFB(deviceFd, width, height, 24, 32, _stride, _dbHandle, &_fbId);
+	error = drmModeAddFB(deviceFd, width, height, depth, bpp, _stride, _dbHandle, &_fbId);
 
 	if(error < 0)
 	{
@@ -71,6 +77,10 @@ DrmFramebuffer::DrmFramebuffer(int deviceFd, unsigned width, unsigned height) : 
 		msg += errno;
 		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
 	}
+
+	// If gets to here then the framebuffer has been successfully setup.
+
+
 }
 
 void DrmFramebuffer::__dealloc()
@@ -88,4 +98,21 @@ void DrmFramebuffer::__dealloc()
 		drmModeDestroyDumbBuffer(_deviceFd, _dbAlloc);
 		_dbAlloc = false;
 	}
+}
+
+void DrmFramebuffer::__bindToCrtc()
+{
+	// TODO ...
+
+	if(drmSetMaster(_deviceFd) == -1)
+	{
+		std::string msg("Could not set device as master. IOCTL error number: ");
+		msg += errno;
+		throw Exception(Exception::Error::DRM_CANT_SET_MASTER, msg);
+	}
+
+	// TODO ...
+
+	// Just ignore any error for now.
+	drmDropMaster(_deviceFd);
 }
