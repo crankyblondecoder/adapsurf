@@ -28,12 +28,6 @@ namespace adapsurf {
 			DrmDevice(unsigned cardNumber, int connectorIndex);
 
 			/**
-			 * Generate a framebuffer for rendering to this device.
-			 * @note This version only generates a framebuffer at driver native resolution.
-			 */
-			Framebuffer* generateFramebuffer();
-
-			/**
 			 * Describe the available DRM resources on std out.
 			 * @param prefTabNum Number of tabs to prefix the output with.
 			 */
@@ -58,11 +52,20 @@ namespace adapsurf {
 			drmModeConnectorPtr _connector;
 			bool _connectorAlloc;
 
+			/** Pointer to connector mode that is this device will use. Relies on the connector being valid. */
+			drmModeModeInfoPtr _connectorMode;
+
 			/** Whether there is dumb buffer support. DRM_CAP_DUMB_BUFFER*/
 			bool _dumbBufferSupport;
 
 			/** The reported preferred depth of dumb buffers. DRM_CAP_DUMB_PREFERRED_DEPTH */
 			uint64_t _dumbBufferPrefDepth;
+
+			/**
+			 * Generate a framebuffer for rendering to this device.
+			 * @note This version only generates a framebuffer at driver native resolution.
+			 */
+			Framebuffer* __generateFramebuffer();
 
 			/** Deallocate any resources held by this. */
 			void __dealloc();

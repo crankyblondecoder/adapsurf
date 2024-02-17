@@ -27,6 +27,8 @@ namespace adapsurf {
 				DRM_GET_CAP_FAIL,
 				/** Failed to find a default connector. */
 				DRM_GET_DEFAULT_CONNECT_FAIL,
+				/** Failed to find a suitable connector mode. */
+				DRM_FIND_CONNECT_MODE_FAIL,
 				/** Failed to generate a requested framebuffer. */
 				DRM_CREATE_FRAME_BUFFER_FAIL
 			};

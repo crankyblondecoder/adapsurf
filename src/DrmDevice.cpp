@@ -79,7 +79,7 @@ void DrmDevice::__dealloc()
 }
 
 DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
-	: _deviceFdAlloc{false}, _drmResourcesAlloc{false}, _connectorAlloc{false}
+	: _deviceFdAlloc{false}, _drmResourcesAlloc{false}, _connectorAlloc{false}, _connectorMode{0}
 {
 	_driDeviceFilePathName = "/dev/dri/card";
 	_driDeviceFilePathName += to_string(cardNumber);
@@ -156,26 +156,63 @@ DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
 			drmModeFreeConnector(connectPtr);
 		}
 
-		if(_connectorIndex == -1)
+		if(!_connectorAlloc)
 		{
+			__dealloc();
+
 			std::string msg("Could not find a suitable, connected, default connector.");
 			throw Exception(Exception::Error::DRM_GET_DEFAULT_CONNECT_FAIL, msg);
 		}
 	}
 	else
 	{
-		_connectorIndex = connectorIndex;
-	}
-}
+		_connector = drmModeGetConnector(_deviceFd, connectorIndex);
 
-Framebuffer* DrmDevice::generateFramebuffer()
-{
-	if(_connectorIndex < 0)
+		if(!_connector)
+		{
+			__dealloc();
+
+			std::string msg("Could not find requested connector with index: ");
+			msg += connectorIndex;
+			throw Exception(Exception::Error::DRM_GET_DEFAULT_CONNECT_FAIL, msg);
+		}
+
+		_connectorAlloc = true;
+	}
+
+	if(_connector -> count_modes < 1)
 	{
-		std::string msg("Connector index has not been defined.");
+		__dealloc();
+
+		std::string msg("At least one connector mode could not be found.");
 		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
 	}
 
+	for(int modeIndex = 0; modeIndex < _connector -> count_modes; modeIndex++)
+	{
+		drmModeModeInfoPtr mode = _connector -> modes + modeIndex;
+
+		if(mode -> type & DRM_MODE_TYPE_PREFERRED)
+		{
+			_connectorMode = mode;
+			break;
+		}
+
+		// Use the first found node unless a preferred node is found.
+		if(!_connectorMode) _connectorMode = mode;
+	}
+
+	if(!_connectorMode)
+	{
+		__dealloc();
+
+		std::string msg("At least one connector mode could not be found.");
+		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
+	}
+}
+
+Framebuffer* DrmDevice::__generateFramebuffer()
+{
 	if(!_dumbBufferSupport)
 	{
 		std::string msg("Dumb buffer is not supported. Could not create framebuffer.");
@@ -188,30 +225,7 @@ Framebuffer* DrmDevice::generateFramebuffer()
 		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
 	}
 
-	drmModeConnectorPtr connectPtr = drmModeGetConnector(_deviceFd, _drmResources -> connectors[_connectorIndex]);
 
-	if(!connectPtr)
-	{
-		std::string msg("Unable to get connector information.");
-		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
-	}
-
-	if(!(connectPtr -> connection == drmModeConnection::DRM_MODE_CONNECTED))
-	{
-		drmModeFreeConnector(connectPtr);
-
-		std::string msg("Requested connection: ");
-		msg += _connectorIndex + " is not connected and cannot be safely queried.";
-		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
-	}
-
-	if(connectPtr -> count_modes < 1)
-	{
-		drmModeFreeConnector(connectPtr);
-
-		std::string msg("At least one connector mode could not be found.");
-		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
-	}
 
 	// For now just set width and height to the first mode found.
 	uint32_t width = connectPtr -> modes[0].hdisplay;
