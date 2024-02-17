@@ -180,6 +180,8 @@ DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
 		_connectorAlloc = true;
 	}
 
+	// Look for suitable mode that connector publishes.
+
 	if(_connector -> count_modes < 1)
 	{
 		__dealloc();
