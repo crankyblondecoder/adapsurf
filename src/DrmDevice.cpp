@@ -182,14 +182,6 @@ DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
 
 	// Look for suitable mode that connector publishes.
 
-	if(_connector -> count_modes < 1)
-	{
-		__dealloc();
-
-		std::string msg("At least one connector mode could not be found.");
-		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
-	}
-
 	for(int modeIndex = 0; modeIndex < _connector -> count_modes; modeIndex++)
 	{
 		drmModeModeInfoPtr mode = _connector -> modes + modeIndex;
@@ -209,11 +201,69 @@ DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
 		__dealloc();
 
 		std::string msg("At least one connector mode could not be found.");
+		throw Exception(Exception::Error::DRM_FIND_CONNECT_MODE_FAIL, msg);
+	}
+
+	// NOTE: To set a framebuffer as being displayed, the crtcId, connector pointer and mode pointer from the connector
+	// are required. These must be the same for all framebuffers produced from this device.
+
+	// Look for a CRTC that can scan out the framebuffers.
+	bool crtcFound = false;
+
+	drmModeEncoderPtr encoder;
+
+	for(int encoderIndex = 0; encoderIndex < _drmResources -> count_encoders; encoderIndex++)
+	{
+		encoder = drmModeGetEncoder(_deviceFd, _connector -> encoders[encoderIndex]);
+
+		if(encoder)
+		{
+			for(int crtcIndex = 0; crtcIndex < _drmResources -> count_crtcs; crtcIndex++)
+			{
+				if(encoder -> possible_crtcs & (1 << crtcIndex))
+				{
+					_crtcId = _drmResources -> crtcs[crtcIndex];
+					crtcFound = true;
+					break;
+				}
+			}
+
+			drmModeFreeEncoder(encoder);
+		}
+
+		if(crtcFound) break;
+	}
+
+	if(!crtcFound)
+	{
+		__dealloc();
+
+		std::string msg("At least one usable CRTC could not be found.");
 		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
 	}
+
+	_fb1 = 0;
+	_fb2 = 0;
+
+	try
+	{
+		_fb1 = __generateFramebuffer();
+		_fb2 = __generateFramebuffer();
+	}
+	catch(const Exception& ex)
+	{
+		if(_fb1) delete _fb1;
+		if(_fb2) delete _fb2;
+
+		__dealloc();
+
+		throw ex;
+	}
+
+	// Device should now be fully setup. The only thing left is to assign the fb's to a crtc as requried.
 }
 
-Framebuffer* DrmDevice::__generateFramebuffer()
+DrmFramebuffer* DrmDevice::__generateFramebuffer()
 {
 	if(!_dumbBufferSupport)
 	{
@@ -227,19 +277,9 @@ Framebuffer* DrmDevice::__generateFramebuffer()
 		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
 	}
 
-
-
 	// For now just set width and height to the first mode found.
-	uint32_t width = connectPtr -> modes[0].hdisplay;
-	uint32_t height = connectPtr -> modes[0].vdisplay;
-
-	// TODO ... To set a framebuffer as being displayed, the crtcId, connector pointer and mode pointer from the connector are required.
-	//          these must be the same for all framebuffers produced from this device.
-	//          Maybe this data should be created as part of the constructor?
-	blah;
-
-	// Free resources that are no longer needed.
-	drmModeFreeConnector(connectPtr);
+	uint32_t width = _connectorMode -> hdisplay;
+	uint32_t height = _connectorMode -> vdisplay;
 
 	return new DrmFramebuffer(_deviceFd, width, height, _dumbBufferPrefDepth, 32);
 }
