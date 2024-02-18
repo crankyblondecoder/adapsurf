@@ -8,7 +8,7 @@
 #include <xf86drmMode.h>
 
 #include "Device.hpp"
-#include "Framebuffer.hpp"
+#include "DrmFramebuffer.hpp"
 
 namespace adapsurf {
 
@@ -55,17 +55,28 @@ namespace adapsurf {
 			/** Pointer to connector mode that is this device will use. Relies on the connector being valid. */
 			drmModeModeInfoPtr _connectorMode;
 
+			/** The ID of the crtc to use to scan out the framebuffers of this device. */
+			uint32_t _crtcId;
+
 			/** Whether there is dumb buffer support. DRM_CAP_DUMB_BUFFER*/
 			bool _dumbBufferSupport;
 
 			/** The reported preferred depth of dumb buffers. DRM_CAP_DUMB_PREFERRED_DEPTH */
 			uint64_t _dumbBufferPrefDepth;
 
+			// Device is double buffered. ie Front/back.
+
+			/** First framebuffer. */
+			DrmFramebuffer* _fb1;
+
+			/** Second framebuffer. */
+			DrmFramebuffer* _fb2;
+
 			/**
 			 * Generate a framebuffer for rendering to this device.
 			 * @note This version only generates a framebuffer at driver native resolution.
 			 */
-			Framebuffer* __generateFramebuffer();
+			DrmFramebuffer* __generateFramebuffer();
 
 			/** Deallocate any resources held by this. */
 			void __dealloc();
