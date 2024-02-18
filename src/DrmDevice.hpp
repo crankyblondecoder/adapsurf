@@ -52,11 +52,17 @@ namespace adapsurf {
 			drmModeConnectorPtr _connector;
 			bool _connectorAlloc;
 
-			/** Pointer to connector mode that is this device will use. Relies on the connector being valid. */
+			/**
+			 * Pointer to connector mode that is this device will use. Relies on the connector being valid.
+			 * This refers to information that is part of the connector information so doesn't need to be freed.
+			 */
 			drmModeModeInfoPtr _connectorMode;
 
 			/** The ID of the crtc to use to scan out the framebuffers of this device. */
 			uint32_t _crtcId;
+
+			/** The crtc state prior to this device taking over. Required to restore state on destruction. */
+			drmModeCrtcPtr _prevCrtc;
 
 			/** Whether there is dumb buffer support. DRM_CAP_DUMB_BUFFER*/
 			bool _dumbBufferSupport;

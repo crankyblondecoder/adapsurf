@@ -54,11 +54,21 @@ const char* connectorTypeName(unsigned int type)
 
 DrmDevice::~DrmDevice()
 {
+	if(_prevCrtc && _connectorAlloc)
+	{
+		// Restore state of crtc prior to this device taking over.
+
+		drmModeSetCrtc(_deviceFd, _prevCrtc -> crtc_id, _prevCrtc -> buffer_id, _prevCrtc -> x, _prevCrtc -> y,
+			&(_connector -> connector_id), 1, &(_prevCrtc -> mode));
+	}
+
 	__dealloc();
 }
 
 void DrmDevice::__dealloc()
 {
+	if(_prevCrtc) drmModeFreeCrtc(_prevCrtc);
+
 	if(_connectorAlloc)
 	{
 		drmModeFreeConnector(_connector);
@@ -240,6 +250,14 @@ DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
 
 		std::string msg("At least one usable CRTC could not be found.");
 		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
+
+	}
+	else
+	{
+		// Save the crtc state so it can restored on this being destroyed.
+		_prevCrtc = drmModeGetCrtc(_deviceFd, _crtcId);
+
+
 	}
 
 	_fb1 = 0;
