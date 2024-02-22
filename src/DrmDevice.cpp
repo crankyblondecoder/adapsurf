@@ -89,7 +89,7 @@ void DrmDevice::__dealloc()
 }
 
 DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
-	: _deviceFdAlloc{false}, _drmResourcesAlloc{false}, _connectorAlloc{false}, _connectorMode{0}
+	: _deviceFdAlloc{false}, _drmResourcesAlloc{false}, _connectorAlloc{false}, _connectorMode{0}, _curFb{0}
 {
 	_driDeviceFilePathName = "/dev/dri/card";
 	_driDeviceFilePathName += to_string(cardNumber);
@@ -250,14 +250,11 @@ DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
 
 		std::string msg("At least one usable CRTC could not be found.");
 		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
-
 	}
 	else
 	{
 		// Save the crtc state so it can restored on this being destroyed.
 		_prevCrtc = drmModeGetCrtc(_deviceFd, _crtcId);
-
-
 	}
 
 	_fb1 = 0;
@@ -375,5 +372,57 @@ void DrmDevice::enumerateResources(unsigned prefTabNum)
 
 			drmModeFreeConnector(connectPtr);
 		}
+	}
+}
+
+void DrmDevice::pageFlip()
+{
+	if(drmSetMaster(_deviceFd) == -1)
+	{
+		std::string msg("Could not set device as master. IOCTL error number: ");
+		msg += errno;
+		throw Exception(Exception::Error::DRM_CANT_SET_MASTER, msg);
+	}
+
+	DrmFramebuffer* nextFb;
+
+	if(_curFbNum == 0 || _curFbNum == 2)
+	{
+		_curFbNum = 1;
+		nextFb = _fb1;
+	}
+	else
+	{
+		_curFbNum = 2;
+		nextFb = _fb2;
+	}
+
+	drmModeSetCrtc(_deviceFd, _crtcId, nextFb -> getFramebufferId(), 0, 0, &(_connector -> connector_id), 1, _connectorMode);
+
+	// Just ignore any error for now.
+	drmDropMaster(_deviceFd);
+}
+
+DrmFramebuffer* DrmDevice::__getBackBuffer()
+{
+	if(_curFbNum == 1)
+	{
+		return _fb1;
+	}
+	else if(_curFbNum == 2)
+	{
+		return _fb2;
+	}
+
+	return 0;
+}
+
+void DrmDevice::clear(double red, double green, double blue)
+{
+	DrmFramebuffer* backBuf = __getBackBuffer();
+
+	if(backBuf)
+	{
+		backBuf -> clear(red, green, blue);
 	}
 }

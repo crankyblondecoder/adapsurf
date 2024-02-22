@@ -27,6 +27,11 @@ namespace adapsurf {
 			 */
 			DrmFramebuffer(int deviceFd, unsigned width, unsigned height, unsigned depth, unsigned bpp);
 
+			uint32_t getFramebufferId();
+
+			/** Clear this buffer with the given colour. */
+			void clear(double red, double green, double blue);
+
 		protected:
 
 		private:
@@ -69,9 +74,6 @@ namespace adapsurf {
 
 			/** Deallocate any resources held by this. */
 			void __dealloc();
-
-			/** Bind this framebuffer to a particular CRTC. */
-			void __bindToCrtc();
 	};
 }
 

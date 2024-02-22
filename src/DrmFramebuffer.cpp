@@ -98,19 +98,13 @@ void DrmFramebuffer::__dealloc()
 	}
 }
 
-void DrmFramebuffer::__bindToCrtc()
+uint32_t DrmFramebuffer::getFramebufferId()
+{
+	return _fbId;
+}
+
+void DrmFramebuffer::clear(double red, double green, double blue)
 {
 	// TODO ...
-
-	if(drmSetMaster(_deviceFd) == -1)
-	{
-		std::string msg("Could not set device as master. IOCTL error number: ");
-		msg += errno;
-		throw Exception(Exception::Error::DRM_CANT_SET_MASTER, msg);
-	}
-
-	// TODO ...
-
-	// Just ignore any error for now.
-	drmDropMaster(_deviceFd);
+	blah;
 }

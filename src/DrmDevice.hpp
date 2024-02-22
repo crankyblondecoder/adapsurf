@@ -33,6 +33,14 @@ namespace adapsurf {
 			 */
 			void enumerateResources(unsigned prefTabNum);
 
+			/**
+			 * Do a page flip. ie Swap the ctrc to use the current framebuffer and make another framebuffer current.
+			 */
+			void pageFlip();
+
+			/** Clear the back buffer with the given colour. */
+			void clear(double red, double green, double blue);
+
 		protected:
 
 		private:
@@ -78,6 +86,9 @@ namespace adapsurf {
 			/** Second framebuffer. */
 			DrmFramebuffer* _fb2;
 
+			/** The current framebuffer that is bound to the crtc. ie The front buffer, which is being displayed. */
+			unsigned _curFbNum;
+
 			/**
 			 * Generate a framebuffer for rendering to this device.
 			 * @note This version only generates a framebuffer at driver native resolution.
@@ -86,6 +97,9 @@ namespace adapsurf {
 
 			/** Deallocate any resources held by this. */
 			void __dealloc();
+
+			/** Get the current back buffer. */
+			DrmFramebuffer* __getBackBuffer();
 	};
 }
 
