@@ -89,7 +89,7 @@ void DrmDevice::__dealloc()
 }
 
 DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
-	: _deviceFdAlloc{false}, _drmResourcesAlloc{false}, _connectorAlloc{false}, _connectorMode{0}, _curFb{0}
+	: _deviceFdAlloc{false}, _drmResourcesAlloc{false}, _connectorAlloc{false}, _connectorMode{0}, _curFbNum{0}
 {
 	_driDeviceFilePathName = "/dev/dri/card";
 	_driDeviceFilePathName += to_string(cardNumber);
@@ -315,6 +315,7 @@ void DrmDevice::enumerateResources(unsigned prefTabNum)
 		cout << prefixTabs << "Device: " << _driDeviceFilePathName << "\n";
 		cout << prefixTabs << "Dumb buffer support: " << (_dumbBufferSupport ? "true" : "false") << "\n";
 		cout << prefixTabs << "Dumb buffer pref depth: " << _dumbBufferPrefDepth << "\n";
+		if(_fb1) cout << prefixTabs << "Framebuffer fourcc: " << _fb1 -> getFourcc() << "\n";
 		cout << prefixTabs << "Min Width: " << _drmResources -> min_width << "  Max Width: " << _drmResources -> max_width << "\n";
 		cout << prefixTabs << "Min Height: " << _drmResources -> min_height << "  Max Height: " << _drmResources -> max_height << "\n";
 		cout << prefixTabs << "Framebuffer Count: " << _drmResources -> count_fbs << "\n";

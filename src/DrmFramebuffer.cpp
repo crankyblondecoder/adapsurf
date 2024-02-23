@@ -106,5 +106,25 @@ uint32_t DrmFramebuffer::getFramebufferId()
 void DrmFramebuffer::clear(double red, double green, double blue)
 {
 	// TODO ...
-	blah;
+}
+
+std::string DrmFramebuffer::getFourcc()
+{
+	std:string retString;
+
+	drmModeFB2Ptr fbInfo = drmModeGetFB2(_deviceFd, _fbId);
+
+	uint32_t fourcc_char1 = (fbInfo -> pixel_format) | 0xF;
+	uint32_t fourcc_char2 = (fbInfo -> pixel_format >> 8) | 0xF;
+	uint32_t fourcc_char3 = (fbInfo -> pixel_format >> 16) | 0xF;
+	uint32_t fourcc_char4 = (fbInfo -> pixel_format >> 24) | 0xF;
+
+	retString += (char) fourcc_char1;
+	retString += (char) fourcc_char2;
+	retString += (char) fourcc_char3;
+	retString += (char) fourcc_char4;
+
+	drmModeFreeFB2(fbInfo);
+
+	return retString;
 }

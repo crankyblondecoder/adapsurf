@@ -32,6 +32,9 @@ namespace adapsurf {
 			/** Clear this buffer with the given colour. */
 			void clear(double red, double green, double blue);
 
+			/** Get the Fourcc code that describes the pixel format of this framebuffer. */
+			std::string getFourcc();
+
 		protected:
 
 		private:

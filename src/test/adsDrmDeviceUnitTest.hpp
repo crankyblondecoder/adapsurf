@@ -8,6 +8,7 @@
 
 extern int cardNumber;
 extern int verbosity;
+extern int connectorNumber;
 
 using namespace adapsurf;
 
@@ -34,7 +35,7 @@ class adsDrmDeviceUnitTest : public adsUnitTest
 
 			try
 			{
-				device = new DrmDevice(cardNumber);
+				device = new DrmDevice(cardNumber, connectorNumber);
 			}
 			catch(const Exception& ex)
 			{
