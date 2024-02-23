@@ -182,6 +182,8 @@ DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
 		{
 			__dealloc();
 
+			enumerateResources(1);
+
 			std::string msg("Could not find requested connector with index: ");
 			msg += std::to_string(connectorIndex);
 			throw Exception(Exception::Error::DRM_GET_DEFAULT_CONNECT_FAIL, msg);
@@ -308,7 +310,7 @@ void DrmDevice::enumerateResources(unsigned prefTabNum)
 		prefixTabs += "\t";
 	}
 
-	if(_drmResources)
+	if(_deviceFd && _drmResources)
 	{
 		cout << prefixTabs << "DRM Resources\n";
 		cout << prefixTabs << "-------------\n";
