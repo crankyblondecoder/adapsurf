@@ -183,7 +183,7 @@ DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
 			__dealloc();
 
 			std::string msg("Could not find requested connector with index: ");
-			msg += connectorIndex;
+			msg += std::to_string(connectorIndex);
 			throw Exception(Exception::Error::DRM_GET_DEFAULT_CONNECT_FAIL, msg);
 		}
 
@@ -381,7 +381,7 @@ void DrmDevice::pageFlip()
 	if(drmSetMaster(_deviceFd) == -1)
 	{
 		std::string msg("Could not set device as master. IOCTL error number: ");
-		msg += errno;
+		msg += std::to_string(errno);
 		throw Exception(Exception::Error::DRM_CANT_SET_MASTER, msg);
 	}
 

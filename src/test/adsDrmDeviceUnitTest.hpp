@@ -31,7 +31,7 @@ class adsDrmDeviceUnitTest : public adsUnitTest
 		{
 			bool allPassed = true;
 
-			DrmDevice* device;
+			DrmDevice* device = 0;
 
 			try
 			{
@@ -53,7 +53,7 @@ class adsDrmDeviceUnitTest : public adsUnitTest
 				cout << "\n";
 			}
 
-			delete device;
+			if(device) delete device;
 
 			// Catch all for all passed.
 			if(allPassed) _notifyTestResult("DRM Device Construction", true, "All tests passed.");

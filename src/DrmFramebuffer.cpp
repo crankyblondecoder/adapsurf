@@ -30,7 +30,7 @@ DrmFramebuffer::DrmFramebuffer(int deviceFd, unsigned width, unsigned height, un
 	if(error < 0)
 	{
 		std::string msg("Error during dumb buffer creation: ");
-		msg += error;
+		msg += std::to_string(error);
 		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
 	}
 
@@ -46,7 +46,7 @@ DrmFramebuffer::DrmFramebuffer(int deviceFd, unsigned width, unsigned height, un
 		__dealloc();
 
 		std::string msg("Error while adding dumb framebuffer: ");
-		msg += error;
+		msg += std::to_string(error);
 		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
 	}
 
@@ -63,7 +63,7 @@ DrmFramebuffer::DrmFramebuffer(int deviceFd, unsigned width, unsigned height, un
 		__dealloc();
 
 		std::string msg("Error while preparing dumb framebuffer for memory mapping: ");
-		msg += error;
+		msg += std::to_string(error);
 		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
 	}
 
@@ -74,7 +74,7 @@ DrmFramebuffer::DrmFramebuffer(int deviceFd, unsigned width, unsigned height, un
 		__dealloc();
 
 		std::string msg("Error while memory mapping framebuffer: ");
-		msg += errno;
+		msg += std::to_string(errno);
 		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
 	}
 
@@ -110,21 +110,24 @@ void DrmFramebuffer::clear(double red, double green, double blue)
 
 std::string DrmFramebuffer::getFourcc()
 {
-	std:string retString;
+	std::string retString;
 
-	drmModeFB2Ptr fbInfo = drmModeGetFB2(_deviceFd, _fbId);
+	if(_fbAlloc)
+	{
+		drmModeFB2Ptr fbInfo = drmModeGetFB2(_deviceFd, _fbId);
 
-	uint32_t fourcc_char1 = (fbInfo -> pixel_format) | 0xF;
-	uint32_t fourcc_char2 = (fbInfo -> pixel_format >> 8) | 0xF;
-	uint32_t fourcc_char3 = (fbInfo -> pixel_format >> 16) | 0xF;
-	uint32_t fourcc_char4 = (fbInfo -> pixel_format >> 24) | 0xF;
+		uint32_t fourcc_char1 = (fbInfo -> pixel_format) | 0xF;
+		uint32_t fourcc_char2 = (fbInfo -> pixel_format >> 8) | 0xF;
+		uint32_t fourcc_char3 = (fbInfo -> pixel_format >> 16) | 0xF;
+		uint32_t fourcc_char4 = (fbInfo -> pixel_format >> 24) | 0xF;
 
-	retString += (char) fourcc_char1;
-	retString += (char) fourcc_char2;
-	retString += (char) fourcc_char3;
-	retString += (char) fourcc_char4;
+		retString += (char) fourcc_char1;
+		retString += (char) fourcc_char2;
+		retString += (char) fourcc_char3;
+		retString += (char) fourcc_char4;
 
-	drmModeFreeFB2(fbInfo);
+		drmModeFreeFB2(fbInfo);
+	}
 
 	return retString;
 }
