@@ -176,13 +176,11 @@ DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
 	}
 	else
 	{
-		_connector = drmModeGetConnector(_deviceFd, connectorIndex);
+		_connector = drmModeGetConnector(_deviceFd, _drmResources -> connectors[connectorIndex]);
 
 		if(!_connector)
 		{
 			__dealloc();
-
-			enumerateResources(1);
 
 			std::string msg("Could not find requested connector with index: ");
 			msg += std::to_string(connectorIndex);
