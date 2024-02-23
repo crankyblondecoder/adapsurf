@@ -8,8 +8,8 @@
 namespace adapsurf {
 
 	/**
-	 * A framebuffer that all surfaces are rendered to.
-	 * @note Currently this must have a stride size (number of bytes between rows) that is compatible with Cairo.
+	 * A Linux DRM based framebuffer.
+	 * @note For now only XR24 pixel format is supported => [31:0] x:R:G:B 8:8:8:8 little endian
 	 */
 	class DrmFramebuffer : public Framebuffer
 	{
@@ -65,6 +65,9 @@ namespace adapsurf {
 
 			/** Total size of buffer in bytes. */
 			uint64_t _size;
+
+			/** The pixel format the framebuffer uses. */
+			uint32_t _pixel_format;
 
 			/** Driver supplied framebuffer id. */
 			uint32_t _fbId;

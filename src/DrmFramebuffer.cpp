@@ -1,4 +1,5 @@
-// You may need to symlink drm.h and drm_mode.h into /usr/include/ for the following to work.
+// You may need to symlink drm.h, drm_mode.h and drm_fourcc.h into /usr/include/ for the following to work.
+#include <drm_fourcc.h>
 #include <string>
 #include <sys/mman.h>
 #include <xf86drm.h>
@@ -15,7 +16,7 @@ DrmFramebuffer::~DrmFramebuffer()
 }
 
 DrmFramebuffer::DrmFramebuffer(int deviceFd, unsigned width, unsigned height, unsigned depth, unsigned bpp)
-	: _deviceFd{deviceFd}
+	: _deviceFd{deviceFd}, _pixel_format{0}
 {
 	_width = width;
 	_height = height;
@@ -78,6 +79,24 @@ DrmFramebuffer::DrmFramebuffer(int deviceFd, unsigned width, unsigned height, un
 		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
 	}
 
+	// Make sure the expected pixel format is present.
+
+	drmModeFB2Ptr fbInfo = drmModeGetFB2(_deviceFd, _fbId);
+
+	if(fbInfo)
+	{
+		_pixel_format = fbInfo -> pixel_format;
+		drmModeFreeFB2(fbInfo);
+	}
+
+	if(_pixel_format != DRM_FORMAT_XRGB8888) {
+
+		__dealloc();
+
+		std::string msg("The DRM Framebuffer currently only supports the XR24 pixel format.");
+		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
+	}
+
 	// If gets to here then the framebuffer has been successfully setup.
 }
 
@@ -105,28 +124,59 @@ uint32_t DrmFramebuffer::getFramebufferId()
 
 void DrmFramebuffer::clear(double red, double green, double blue)
 {
-	// TODO ...
+	// Assume XR24 pixel format only.
+
+	uint8_t clRed = red * 255;
+	uint8_t clGreen = green * 255;
+	uint8_t clBlue = blue * 255;
+
+	uint8_t* buf = (uint8_t*) _fbMapAddr;
+	uint8_t* bufEnd = buf + _size;
+
+	while(buf < bufEnd)
+	{
+		// Byte 0 is blue.
+		*buf++ = clBlue;
+		// Byte 1 is green.
+		*buf++ = clGreen;
+		// Byte 2 is red.
+		*buf++ = clRed;
+		// Byte 3 is not used.
+		buf++;
+	}
 }
 
 std::string DrmFramebuffer::getFourcc()
 {
+	/*
+	 * Typically this will be XR24: [31:0] x:R:G:B 8:8:8:8 little endian
+	 *
+	 *     Byte 0: B
+	 *     Byte 1: G
+	 *     Byte 2: R
+	 *     Byte 3: X (not used)
+	 */
+
 	std::string retString;
 
 	if(_fbAlloc)
 	{
 		drmModeFB2Ptr fbInfo = drmModeGetFB2(_deviceFd, _fbId);
 
-		uint32_t fourcc_char1 = (fbInfo -> pixel_format) | 0xF;
-		uint32_t fourcc_char2 = (fbInfo -> pixel_format >> 8) | 0xF;
-		uint32_t fourcc_char3 = (fbInfo -> pixel_format >> 16) | 0xF;
-		uint32_t fourcc_char4 = (fbInfo -> pixel_format >> 24) | 0xF;
+		if(fbInfo)
+		{
+			uint32_t fourcc_char1 = (fbInfo -> pixel_format) & 0xFF;
+			uint32_t fourcc_char2 = (fbInfo -> pixel_format >> 8) & 0xFF;
+			uint32_t fourcc_char3 = (fbInfo -> pixel_format >> 16) & 0xFF;
+			uint32_t fourcc_char4 = (fbInfo -> pixel_format >> 24) & 0xFF;
 
-		retString += (char) fourcc_char1;
-		retString += (char) fourcc_char2;
-		retString += (char) fourcc_char3;
-		retString += (char) fourcc_char4;
+			retString += (char) fourcc_char1;
+			retString += (char) fourcc_char2;
+			retString += (char) fourcc_char3;
+			retString += (char) fourcc_char4;
 
-		drmModeFreeFB2(fbInfo);
+			drmModeFreeFB2(fbInfo);
+		}
 	}
 
 	return retString;
