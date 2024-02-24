@@ -1,6 +1,7 @@
 #include <cmath>
 #include <iostream>
 #include <string>
+#include <unistd.h>
 
 #include "adsUnitTest.hpp"
 #include "../DrmDevice.hpp"
@@ -57,6 +58,8 @@ class adsDrmDeviceUnitTest : public adsUnitTest
 			{
 				device -> clear(1.0, 0.0, 0.0);
 				device -> pageFlip();
+
+				usleep(3000);
 
 				delete device;
 			}
