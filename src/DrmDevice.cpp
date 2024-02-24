@@ -406,7 +406,7 @@ void DrmDevice::pageFlip()
 
 DrmFramebuffer* DrmDevice::__getBackBuffer()
 {
-	if(_curFbNum == 1)
+	if(_curFbNum < 2)
 	{
 		return _fb1;
 	}
