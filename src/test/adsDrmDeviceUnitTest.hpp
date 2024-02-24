@@ -53,7 +53,13 @@ class adsDrmDeviceUnitTest : public adsUnitTest
 				cout << "\n";
 			}
 
-			if(device) delete device;
+			if(device)
+			{
+				device -> clear(1.0, 0.0, 0.0);
+				device -> pageFlip();
+
+				delete device;
+			}
 
 			// Catch all for all passed.
 			if(allPassed) _notifyTestResult("DRM Device Construction", true, "All tests passed.");
