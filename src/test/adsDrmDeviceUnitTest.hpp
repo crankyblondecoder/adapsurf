@@ -59,7 +59,7 @@ class adsDrmDeviceUnitTest : public adsUnitTest
 				device -> clear(1.0, 0.0, 0.0);
 				device -> pageFlip();
 
-				usleep(3000);
+				sleep(3);
 
 				delete device;
 			}
