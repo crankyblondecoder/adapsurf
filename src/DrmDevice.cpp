@@ -406,16 +406,16 @@ void DrmDevice::pageFlip()
 
 DrmFramebuffer* DrmDevice::__getBackBuffer()
 {
-	if(_curFbNum < 2)
-	{
-		return _fb1;
-	}
-	else if(_curFbNum == 2)
+	if(_curFbNum == 1)
 	{
 		return _fb2;
 	}
+	else if(_curFbNum == 2)
+	{
+		return _fb1;
+	}
 
-	return 0;
+	return _fb1;
 }
 
 void DrmDevice::clear(double red, double green, double blue)
