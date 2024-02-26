@@ -5,6 +5,8 @@
 
 namespace adapsurf {
 
+	class Framebuffer;
+
 	/**
 	 * Base class of all surfaces.
 	 * @note For now only Cairo's CAIRO_FORMAT_ARGB32 format is supported. Internally it can be whatever but it must be able
@@ -16,6 +18,12 @@ namespace adapsurf {
 
 			virtual ~Surface();
 			Surface();
+
+			/**
+			 * Compose this surface and all its children onto a framebuffer.
+			 * @param framebuffer Framebuffer to compose this surface onto.
+			 */
+			void compose(Framebuffer& framebuffer);
 
 			/**
 			 * Get this surfaces pixel data.
@@ -39,16 +47,16 @@ namespace adapsurf {
 			virtual unsigned getPixelDataStride() = 0;
 
 			/**
-			 * Get the position of this surface relative to it's parent. X coordinate. Positive is right.
+			 * Get the global position of this surface. X coordinate. Positive is right.
 			 * @return X coordinate in pixels.
 			 */
-			unsigned getPositionX();
+			unsigned getGlobalPositionX();
 
 			/**
-			 * Get the position of this surface relative to it's parent. Y coordinate. Positive is down.
+			 * Get the global position of this surface. Y coordinate. Positive is down.
 			 * @returns Y coordinate in pixels.
 			 */
-			unsigned getPositionY();
+			unsigned getGlobalPositionY();
 
 			/**
 			 * Get the current width this surface, in pixels.
@@ -80,10 +88,15 @@ namespace adapsurf {
 			/** Number of children present. */
 			unsigned __numChildren;
 
-			/** Position of this surface relative to its parent. X coordinate. Positive X is right. */
-			unsigned __positionX;
-			/** Position of this surface relative to its parent. Y coordinate. Positive Y is down. */
-			unsigned __positionY;
+			/** Position (local) of this surface relative to its parent. X coordinate. Positive X is right. */
+			unsigned __localPositionX;
+			/** Position (local) of this surface relative to its parent. Y coordinate. Positive Y is down. */
+			unsigned __localPositionY;
+
+			/** Position of this surface in global (absolute) coordinates. X coordinate. */
+			unsigned __globalPositionX;
+			/** Position of this surface in global (absolute) coordinates. Y coordinate. */
+			unsigned __globalPositionY;
 
 			/** Minimum width of surface in pixels. */
 			unsigned __minWidth;

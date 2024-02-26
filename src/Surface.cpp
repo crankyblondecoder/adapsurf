@@ -1,4 +1,5 @@
 #include "Exception.hpp"
+#include "Framebuffer.hpp"
 #include "Surface.hpp"
 
 using namespace adapsurf;
@@ -12,14 +13,31 @@ Surface::Surface()
 {
 }
 
-unsigned Surface::getPositionX()
+void Surface::compose(Framebuffer& framebuffer)
 {
-	return __positionX;
+	// Composition starts with this surface and then traverses each child in turn. That way the children are composited last
+	// with the last child being "on top" of everything else.
+
+	framebuffer.compose(*this);
+
+	Surface* child;
+
+	for(unsigned index = 0; index < __childrenSize; index++)
+	{
+		child = __children[index];
+
+		if(child) child -> compose(framebuffer);
+	}
 }
 
-unsigned Surface::getPositionY()
+unsigned Surface::getGlobalPositionX()
 {
-	return __positionY;
+	return __localPositionX;
+}
+
+unsigned Surface::getGlobalPositionY()
+{
+	return __localPositionY;
 }
 
 unsigned Surface::getWidth()

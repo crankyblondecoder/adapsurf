@@ -191,6 +191,8 @@ void DrmFramebuffer::compose(Surface& surface)
 		unsigned size = surface.getPixelDataSize();
 		unsigned stride = surface.getPixelDataStride();
 
+		// TODO ... Short circuit the composition if none of the target surface is within this framebuffer.
+
 		// TODO ... Copy to current to buffer while taking into account the pixel data has pre-multiplied alpha.
 	}
 }
