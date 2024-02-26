@@ -30,7 +30,9 @@ namespace adapsurf {
 				/** Failed to find a suitable connector mode. */
 				DRM_FIND_CONNECT_MODE_FAIL,
 				/** Failed to generate a requested framebuffer. */
-				DRM_CREATE_FRAME_BUFFER_FAIL
+				DRM_CREATE_FRAME_BUFFER_FAIL,
+				/** A surface could not find the requested child. */
+				SURF_CHILD_NOT_FOUND
 			};
 
 			virtual ~Exception(){}

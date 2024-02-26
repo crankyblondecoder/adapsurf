@@ -181,3 +181,16 @@ std::string DrmFramebuffer::getFourcc()
 
 	return retString;
 }
+
+void DrmFramebuffer::compose(Surface& surface)
+{
+	uint8_t* pixelData = surface.getPixelData();
+
+	if(pixelData)
+	{
+		unsigned size = surface.getPixelDataSize();
+		unsigned stride = surface.getPixelDataStride();
+
+		// TODO ... Copy to current to buffer while taking into account the pixel data has pre-multiplied alpha.
+	}
+}

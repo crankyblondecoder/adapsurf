@@ -35,6 +35,9 @@ namespace adapsurf {
 			/** Get the Fourcc code that describes the pixel format of this framebuffer. */
 			std::string getFourcc();
 
+			// Override.
+			void compose(Surface& surface);
+
 		protected:
 
 		private:

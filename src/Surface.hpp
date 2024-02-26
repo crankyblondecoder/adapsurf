@@ -1,6 +1,8 @@
 #ifndef ADS_SURFACE_H
 #define ADS_SURFACE_H
 
+#define CHILD_ARRAY_PAGE_SIZE 8
+
 namespace adapsurf {
 
 	/**
@@ -12,7 +14,7 @@ namespace adapsurf {
 	{
 		public:
 
-			~Surface();
+			virtual ~Surface();
 			Surface();
 
 			/**
@@ -58,9 +60,13 @@ namespace adapsurf {
 			 */
 			unsigned getHeight();
 
-		protected:
+			/** Add a child surface to this surface. */
+			void addChild(Surface* child);
 
-			void _setParent(Surface* parent);
+			/** Remove a child surface from this surface. */
+			void removeChild(Surface* child);
+
+		protected:
 
 		private:
 
@@ -69,6 +75,10 @@ namespace adapsurf {
 
 			/** Child surfaces of this surface. */
 			Surface** __children;
+			/** Size of the children array. */
+			unsigned __childrenSize;
+			/** Number of children present. */
+			unsigned __numChildren;
 
 			/** Position of this surface relative to its parent. X coordinate. Positive X is right. */
 			unsigned __positionX;
@@ -94,6 +104,15 @@ namespace adapsurf {
 			unsigned __curWidth;
 			/** Current height of surface in pixels. */
 			unsigned __curHeight;
+
+			/** Remove a child surface from this surface. */
+			void __removeChild(Surface* child);
+
+			/**
+			 * Set the parent of this surface.
+			 * Does _not_ remove this from existing parent. That must be done explicitly.
+			 */
+			void __setParent(Surface* parent);
 	};
 }
 

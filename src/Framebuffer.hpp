@@ -23,7 +23,7 @@ namespace adapsurf {
 			 * Compose a surface onto this framebuffer.
 			 * @param surface The surface to compose.
 			 */
-			void compose(Surface& surface);
+			virtual void compose(Surface& surface) = 0;
 
 		protected:
 
