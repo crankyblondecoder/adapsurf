@@ -3,6 +3,8 @@
 
 #include <cstdint>
 
+#include "Surface.hpp"
+
 namespace adapsurf {
 
 	/**
@@ -16,6 +18,12 @@ namespace adapsurf {
 			virtual ~Framebuffer();
 
 			Framebuffer();
+
+			/**
+			 * Compose a surface onto this framebuffer.
+			 * @param surface The surface to compose.
+			 */
+			void compose(Surface& surface);
 
 		protected:
 
