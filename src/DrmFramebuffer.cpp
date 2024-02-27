@@ -184,14 +184,20 @@ std::string DrmFramebuffer::getFourcc()
 
 void DrmFramebuffer::compose(Surface& surface)
 {
+	unsigned surfWidth = surface.getWidth();
+	unsigned surfHeight = surface.getHeight();
+	int surfPosnX = surface.getGlobalPositionX();
+	int surfPosnY = surface.getGlobalPositionY();
+
+	// Short circuit the composition if none of the target surface is within this framebuffer.
+	if(surfPosnX >= _width || surfPosnY >= _height || surfPosnX + surfWidth < 0 || surfPosnY + surfHeight < 0) return;
+
 	uint8_t* pixelData = surface.getPixelData();
 
 	if(pixelData)
 	{
 		unsigned size = surface.getPixelDataSize();
 		unsigned stride = surface.getPixelDataStride();
-
-		// TODO ... Short circuit the composition if none of the target surface is within this framebuffer.
 
 		// TODO ... Copy to current to buffer while taking into account the pixel data has pre-multiplied alpha.
 	}

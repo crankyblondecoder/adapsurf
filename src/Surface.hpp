@@ -50,13 +50,13 @@ namespace adapsurf {
 			 * Get the global position of this surface. X coordinate. Positive is right.
 			 * @return X coordinate in pixels.
 			 */
-			unsigned getGlobalPositionX();
+			int getGlobalPositionX();
 
 			/**
 			 * Get the global position of this surface. Y coordinate. Positive is down.
 			 * @returns Y coordinate in pixels.
 			 */
-			unsigned getGlobalPositionY();
+			int getGlobalPositionY();
 
 			/**
 			 * Get the current width this surface, in pixels.
@@ -89,14 +89,14 @@ namespace adapsurf {
 			unsigned __numChildren;
 
 			/** Position (local) of this surface relative to its parent. X coordinate. Positive X is right. */
-			unsigned __localPositionX;
+			int __localPositionX;
 			/** Position (local) of this surface relative to its parent. Y coordinate. Positive Y is down. */
-			unsigned __localPositionY;
+			int __localPositionY;
 
 			/** Position of this surface in global (absolute) coordinates. X coordinate. */
-			unsigned __globalPositionX;
+			int __globalPositionX;
 			/** Position of this surface in global (absolute) coordinates. Y coordinate. */
-			unsigned __globalPositionY;
+			int __globalPositionY;
 
 			/** Minimum width of surface in pixels. */
 			unsigned __minWidth;

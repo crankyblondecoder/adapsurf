@@ -30,14 +30,14 @@ void Surface::compose(Framebuffer& framebuffer)
 	}
 }
 
-unsigned Surface::getGlobalPositionX()
+int Surface::getGlobalPositionX()
 {
-	return __localPositionX;
+	return __globalPositionX;
 }
 
-unsigned Surface::getGlobalPositionY()
+int Surface::getGlobalPositionY()
 {
-	return __localPositionY;
+	return __globalPositionY;
 }
 
 unsigned Surface::getWidth()
