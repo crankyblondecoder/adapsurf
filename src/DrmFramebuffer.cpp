@@ -184,13 +184,18 @@ std::string DrmFramebuffer::getFourcc()
 
 void DrmFramebuffer::compose(Surface& surface)
 {
-	unsigned surfWidth = surface.getWidth();
-	unsigned surfHeight = surface.getHeight();
-	int surfPosnX = surface.getGlobalPositionX();
-	int surfPosnY = surface.getGlobalPositionY();
+	int srcPosnX = surface.getGlobalPositionX();
+	int srcPosnY = surface.getGlobalPositionY();
+
+	unsigned srcWidth = surface.getWidth();
+	unsigned srcHeight = surface.getHeight();
+
+	// Source left and bottom extremities.
+	unsigned srcEndX = srcPosnX + srcWidth - 1;
+	unsigned srcEndY = srcPosnY + srcHeight - 1;
 
 	// Short circuit the composition if none of the target surface is within this framebuffer.
-	if(surfPosnX >= _width || surfPosnY >= _height || surfPosnX + surfWidth < 0 || surfPosnY + surfHeight < 0) return;
+	if(srcPosnX >= _width || srcPosnY >= _height || srcEndX < 0 || srcEndY < 0) return;
 
 	uint8_t* pixelData = surface.getPixelData();
 
@@ -199,8 +204,27 @@ void DrmFramebuffer::compose(Surface& surface)
 		unsigned size = surface.getPixelDataSize();
 		unsigned stride = surface.getPixelDataStride();
 
+		// Source line index to start copying from.
+		unsigned srcStartLine = srcPosnY < 0 ? -srcPosnY : 0;
+
+		// Source line index to finish copying from.
+		unsigned srcEndLine = srcHeight - 1;
+		if(srcEndY >= _height) srcEndLine -= srcEndY - _height + 1;
+
+		// Offset of start of line to copy from source surface. In pixels.
+		unsigned srcLineStartOffset = srcPosnX < 0 ? -srcPosnX : 0;
+
+		// Offset (inclusive) of end of line to copy from source surface. In pixels.
+		unsigned srcLineEndOffset = srcWidth - 1;
+		if(srcEndX >= _width) srcLineEndOffset -= srcEndX - _width + 1;
+
+		// Number of pixels to copy from the source per line.
+		unsigned numPixCopyPerLine = srcLineEndOffset - srcLineStartOffset + 1;
+
+		// Start of line to copy in source pixel data.
+		uint8_t* srcLineStart = pixelData + srcStartLine * stride + srcLineStartOffset * 4;
+
 		// TODO ... Copy to current buffer while taking into account the pixel data has pre-multiplied alpha.
-
-
+		blah;
 	}
 }
