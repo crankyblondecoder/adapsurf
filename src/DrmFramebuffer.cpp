@@ -201,8 +201,10 @@ void DrmFramebuffer::compose(Surface& surface)
 
 	if(pixelData)
 	{
-		unsigned size = surface.getPixelDataSize();
-		unsigned stride = surface.getPixelDataStride();
+		//    |---|-------------|---|
+
+		unsigned srcSize = surface.getPixelDataSize();
+		unsigned srcStride = surface.getPixelDataStride();
 
 		// Source line index to start copying from.
 		unsigned srcStartLine = srcPosnY < 0 ? -srcPosnY : 0;
@@ -210,6 +212,8 @@ void DrmFramebuffer::compose(Surface& surface)
 		// Source line index to finish copying from.
 		unsigned srcEndLine = srcHeight - 1;
 		if(srcEndY >= _height) srcEndLine -= srcEndY - _height + 1;
+
+		unsigned numLines = srcEndLine - srcStartLine + 1;
 
 		// Offset of start of line to copy from source surface. In pixels.
 		unsigned srcLineStartOffset = srcPosnX < 0 ? -srcPosnX : 0;
@@ -221,10 +225,27 @@ void DrmFramebuffer::compose(Surface& surface)
 		// Number of pixels to copy from the source per line.
 		unsigned numPixCopyPerLine = srcLineEndOffset - srcLineStartOffset + 1;
 
-		// Start of line to copy in source pixel data.
-		uint8_t* srcLineStart = pixelData + srcStartLine * stride + srcLineStartOffset * 4;
+		// Calculate initial source copy position.
+		uint8_t* srcCpPosn = pixelData + srcStartLine * srcStride + srcLineStartOffset * 4;
+
+		// Number of source bytes to go from end of line to start of next line (with offset).
+		unsigned nextSrcLineStride = srcStride - numPixCopyPerLine * 4;
 
 		// TODO ... Copy to current buffer while taking into account the pixel data has pre-multiplied alpha.
 		blah;
+
+		unsigned linePixelOffset;
+
+		for(unsigned line = 0; line < numLines; line++)
+		{
+			linePixelOffset = 0;
+
+			for(unsigned pixel = 0; pixel < numPixCopyPerLine; pixel++)
+			{
+
+			}
+
+			srcCpPosn += nextSrcLineStride;
+		}
 	}
 }
