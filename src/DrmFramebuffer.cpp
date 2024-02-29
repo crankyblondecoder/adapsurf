@@ -68,7 +68,7 @@ DrmFramebuffer::DrmFramebuffer(int deviceFd, unsigned width, unsigned height, un
 		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
 	}
 
-	_fbMapAddr = mmap(0, _size, PROT_READ | PROT_WRITE, MAP_SHARED, _deviceFd, offset);
+	_fbMapAddr = (uint8_t*) mmap(0, _size, PROT_READ | PROT_WRITE, MAP_SHARED, _deviceFd, offset);
 
 	if(_fbMapAddr == MAP_FAILED) {
 
@@ -213,39 +213,77 @@ void DrmFramebuffer::compose(Surface& surface)
 		unsigned srcEndLine = srcHeight - 1;
 		if(srcEndY >= _height) srcEndLine -= srcEndY - _height + 1;
 
+		// Number of source lines to be copied.
 		unsigned numLines = srcEndLine - srcStartLine + 1;
 
-		// Offset of start of line to copy from source surface. In pixels.
+		// Start offset in source line to copy from. In pixels.
 		unsigned srcLineStartOffset = srcPosnX < 0 ? -srcPosnX : 0;
 
-		// Offset (inclusive) of end of line to copy from source surface. In pixels.
+		// End offset (inclusive) of source line to copy from. In pixels.
 		unsigned srcLineEndOffset = srcWidth - 1;
 		if(srcEndX >= _width) srcLineEndOffset -= srcEndX - _width + 1;
 
 		// Number of pixels to copy from the source per line.
 		unsigned numPixCopyPerLine = srcLineEndOffset - srcLineStartOffset + 1;
 
-		// Calculate initial source copy position.
-		uint8_t* srcCpPosn = pixelData + srcStartLine * srcStride + srcLineStartOffset * 4;
-
 		// Number of source bytes to go from end of line to start of next line (with offset).
 		unsigned nextSrcLineStride = srcStride - numPixCopyPerLine * 4;
 
-		// TODO ... Copy to current buffer while taking into account the pixel data has pre-multiplied alpha.
-		blah;
+		// Number of fb bytes to go from end of line to start of next line (with offset).
+		unsigned nextFbLineStride = _stride - numPixCopyPerLine * 4;
 
-		unsigned linePixelOffset;
+		// Calculate initial source copy from position.
+		uint8_t* srcCpPosn = pixelData + srcStartLine * srcStride + srcLineStartOffset * 4;
+
+		// TODO ... Calculate initial fb copy to position.
+		uint8_t* fbCpPosn = _fbMapAddr + (srcPosnY + srcStartLine) * _stride + (srcPosnX + srcLineStartOffset) * 4;
+
+		// Copy to current buffer while taking into account the pixel data has pre-multiplied alpha.
+
+		// Current source pixel values.
+		uint8_t srcBlue;
+		uint8_t srcGreen;
+		uint8_t srcRed;
+		uint8_t srcAlpha;
+
+		// Effective alpha value used to scale current fb pixel channels.
+		double effAlpha;
 
 		for(unsigned line = 0; line < numLines; line++)
 		{
-			linePixelOffset = 0;
-
 			for(unsigned pixel = 0; pixel < numPixCopyPerLine; pixel++)
 			{
+				// Work at byte level because it then become machine endien agnostic.
+				srcBlue = *srcCpPosn++;
+				srcGreen = *srcCpPosn++;
+				srcRed = *srcCpPosn++;
+				srcAlpha = *srcCpPosn++;
 
+				if(srcAlpha == 0xFF)
+				{
+					// Just straight copy is required.
+
+					*fbCpPosn++ = srcBlue;
+					*fbCpPosn++ = srcGreen;
+					*fbCpPosn++ = srcRed;
+					*fbCpPosn += 2;
+				}
+				else
+				{
+					// Alpha blend.
+					effAlpha = 1.0 - ((double)srcAlpha / 255.0);
+
+					*fbCpPosn = srcBlue + (uint8_t)((double)(*fbCpPosn) * effAlpha);
+					fbCpPosn++;
+					*fbCpPosn = srcGreen + (uint8_t)((double)(*fbCpPosn) * effAlpha);
+					fbCpPosn++;
+					*fbCpPosn = srcRed + (uint8_t)((double)(*fbCpPosn) * effAlpha);
+					*fbCpPosn += 2;
+				}
 			}
 
 			srcCpPosn += nextSrcLineStride;
+			fbCpPosn += nextFbLineStride;
 		}
 	}
 }

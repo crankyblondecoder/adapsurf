@@ -79,7 +79,7 @@ namespace adapsurf {
 			bool _fbAlloc;
 
 			/** The address where the framebuffer is mapped to */
-			void* _fbMapAddr;
+			uint8_t* _fbMapAddr;
 
 			/** Deallocate any resources held by this. */
 			void __dealloc();
