@@ -9,8 +9,8 @@ namespace adapsurf {
 
 	/**
 	 * Base class of all surfaces.
-	 * @note For now only Cairo's CAIRO_FORMAT_ARGB32 format is supported. Internally it can be whatever but it must be able
-	 *       to return its buffer in this format.
+	 * @note For now only Cairo's CAIRO_FORMAT_ARGB32 format is supported for pixel data. Internally it can be whatever but
+	 * it must be able to return its buffer in this format.
 	 */
 	class Surface
 	{
