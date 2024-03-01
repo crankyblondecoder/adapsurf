@@ -79,6 +79,18 @@ namespace adapsurf {
 
 		protected:
 
+			/**
+			 * Get the global position of this surface. X coordinate. Positive is right.
+			 * @return X coordinate in pixels.
+			 */
+			int _getGlobalPositionX();
+
+			/**
+			 * Get the global position of this surface. Y coordinate. Positive is down.
+			 * @returns Y coordinate in pixels.
+			 */
+			int _getGlobalPositionY();
+
 		private:
 
 			/** Parent of this surface. Any part of this surface which goes outside the parent is clipped. */
@@ -109,6 +121,11 @@ namespace adapsurf {
 			 * Does _not_ remove this from existing parent. That must be done explicitly.
 			 */
 			void __setParent(Surface* parent);
+
+			/**
+			 * Update the global position of this surface based on its parents global position.
+			 */
+			void __updateGlobalPosn();
 	};
 }
 

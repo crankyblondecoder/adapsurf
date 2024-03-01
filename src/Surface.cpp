@@ -41,6 +41,16 @@ int Surface::getGlobalPositionY()
 	return _globalPositionY;
 }
 
+int Surface::_getGlobalPositionX()
+{
+	return _globalPositionX;
+}
+
+int Surface::_getGlobalPositionY()
+{
+	return _globalPositionY;
+}
+
 void Surface::addChild(Surface* child)
 {
 	if(_childrenSize == 0 || _numChildren == _childrenSize)
@@ -124,4 +134,18 @@ void Surface::__removeChild(Surface* child)
 void Surface::__setParent(Surface* parent)
 {
 	_parent = parent;
+
+	__updateGlobalPosn();
+}
+
+void Surface::__updateGlobalPosn()
+{
+	_globalPositionX = _localPositionX;
+	_globalPositionY = _localPositionY;
+
+	if(_parent)
+	{
+		_globalPositionX += _parent -> _getGlobalPositionX();
+		_globalPositionY += _parent -> _getGlobalPositionY();
+	}
 }
