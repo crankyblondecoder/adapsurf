@@ -7,6 +7,7 @@ namespace adapsurf {
 
 	/**
 	 * Surface that only lays out children in a grid and doesn't draw anything.
+	 * @note This is yet to be implemented.
 	 */
 	class GridSurface : public Surface
 	{

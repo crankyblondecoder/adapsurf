@@ -32,7 +32,9 @@ namespace adapsurf {
 				/** Failed to generate a requested framebuffer. */
 				DRM_CREATE_FRAME_BUFFER_FAIL,
 				/** A surface could not find the requested child. */
-				SURF_CHILD_NOT_FOUND
+				SURF_CHILD_NOT_FOUND,
+				/** Could not create a usable surface. */
+				SURF_COULD_NOT_CREATE
 			};
 
 			virtual ~Exception(){}

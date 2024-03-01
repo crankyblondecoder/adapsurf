@@ -1,6 +1,8 @@
 #ifndef ADS_SURFACE_H
 #define ADS_SURFACE_H
 
+#include <cstdint>
+
 #define CHILD_ARRAY_PAGE_SIZE 8
 
 namespace adapsurf {
@@ -17,7 +19,14 @@ namespace adapsurf {
 		public:
 
 			virtual ~Surface();
-			Surface();
+
+			/**
+			 * Construct new surface.
+			 * @note If this surface doesn't have a parent local coordinates are equivalent to global coordinates.
+			 * @param localPositionX Position of surface in local coordinates. X coordinate. Positive X is right.
+			 * @param localPositionY Position of surface in local coordinates. Y coordinate. Positive Y is down.
+			 */
+			Surface(int localPositionX, int localPositionY);
 
 			/**
 			 * Compose this surface and all its children onto a framebuffer.
@@ -31,12 +40,6 @@ namespace adapsurf {
 			 * @returns This surfaces pixel data in CAIRO_FORMAT_ARGB32 format.
 			 */
 			virtual uint8_t* getPixelData() = 0;
-
-			/**
-			 * Get the size of this surfaces pixel data.
-			 * @returns Size in bytes.
-			*/
-			virtual unsigned getPixelDataSize() = 0;
 
 			/**
 			 * Get the stride of this surfaces pixel data.
@@ -61,12 +64,12 @@ namespace adapsurf {
 			/**
 			 * Get the current width this surface, in pixels.
 			 */
-			unsigned getWidth();
+			virtual unsigned getWidth() = 0;
 
 			/**
 			 * Get the current height of this surface, in pixels.
 			 */
-			unsigned getHeight();
+			virtual unsigned getHeight() = 0;
 
 			/** Add a child surface to this surface. */
 			void addChild(Surface* child);
@@ -79,44 +82,24 @@ namespace adapsurf {
 		private:
 
 			/** Parent of this surface. Any part of this surface which goes outside the parent is clipped. */
-			Surface* __parent;
+			Surface* _parent;
 
 			/** Child surfaces of this surface. */
-			Surface** __children;
+			Surface** _children;
 			/** Size of the children array. */
-			unsigned __childrenSize;
+			unsigned _childrenSize;
 			/** Number of children present. */
-			unsigned __numChildren;
+			unsigned _numChildren;
 
 			/** Position (local) of this surface relative to its parent. X coordinate. Positive X is right. */
-			int __localPositionX;
+			int _localPositionX;
 			/** Position (local) of this surface relative to its parent. Y coordinate. Positive Y is down. */
-			int __localPositionY;
+			int _localPositionY;
 
 			/** Position of this surface in global (absolute) coordinates. X coordinate. */
-			int __globalPositionX;
+			int _globalPositionX;
 			/** Position of this surface in global (absolute) coordinates. Y coordinate. */
-			int __globalPositionY;
-
-			/** Minimum width of surface in pixels. */
-			unsigned __minWidth;
-			/** Minimum height of surface in pixels. */
-			unsigned __minHeight;
-
-			/** Maximum width of surface in pixels. */
-			unsigned __maxWidth;
-			/** Maximum height of surface in pixels. */
-			unsigned __maxHeight;
-
-			/** Preferred width of surface in pixels. */
-			unsigned __prefWidth;
-			/** Preferred height of surface in pixels. */
-			unsigned __prefHeight;
-
-			/** Current width of surface in pixels. */
-			unsigned __curWidth;
-			/** Current height of surface in pixels. */
-			unsigned __curHeight;
+			int _globalPositionY;
 
 			/** Remove a child surface from this surface. */
 			void __removeChild(Surface* child);

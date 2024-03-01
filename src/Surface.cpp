@@ -8,8 +8,9 @@ Surface::~Surface()
 {
 }
 
-Surface::Surface()
-	: __parent{0}, __children{0}, __childrenSize{0}, __numChildren{0}
+Surface::Surface(int localPositionX, int localPositionY)
+	: _parent{0}, _children{0}, _childrenSize{0}, _numChildren{0}, _localPositionX{localPositionX},
+	_localPositionY{localPositionY}, _globalPositionX{localPositionX}, _globalPositionY{localPositionY}
 {
 }
 
@@ -22,9 +23,9 @@ void Surface::compose(Framebuffer& framebuffer)
 
 	Surface* child;
 
-	for(unsigned index = 0; index < __childrenSize; index++)
+	for(unsigned index = 0; index < _childrenSize; index++)
 	{
-		child = __children[index];
+		child = _children[index];
 
 		if(child) child -> compose(framebuffer);
 	}
@@ -32,38 +33,28 @@ void Surface::compose(Framebuffer& framebuffer)
 
 int Surface::getGlobalPositionX()
 {
-	return __globalPositionX;
+	return _globalPositionX;
 }
 
 int Surface::getGlobalPositionY()
 {
-	return __globalPositionY;
-}
-
-unsigned Surface::getWidth()
-{
-	return __curWidth;
-}
-
-unsigned Surface::getHeight()
-{
-	return __curHeight;
+	return _globalPositionY;
 }
 
 void Surface::addChild(Surface* child)
 {
-	if(__childrenSize == 0 || __numChildren == __childrenSize)
+	if(_childrenSize == 0 || _numChildren == _childrenSize)
 	{
 		// Create a new page.
-		unsigned newSize = __childrenSize + CHILD_ARRAY_PAGE_SIZE;
+		unsigned newSize = _childrenSize + CHILD_ARRAY_PAGE_SIZE;
 
 		Surface** newArray = new Surface*[newSize];
 
 		for(unsigned index = 0; index < newSize; index++)
 		{
-			if(index < __childrenSize)
+			if(index < _childrenSize)
 			{
-				newArray[index] = __children[index];
+				newArray[index] = _children[index];
 			}
 			else
 			{
@@ -72,25 +63,25 @@ void Surface::addChild(Surface* child)
 		}
 
 		// First slot in newly allocated page.
-		newArray[__childrenSize] = child;
+		newArray[_childrenSize] = child;
 
-		__childrenSize = newSize;
-		__numChildren++;
+		_childrenSize = newSize;
+		_numChildren++;
 
-		delete[] __children;
+		delete[] _children;
 
-		__children = newArray;
+		_children = newArray;
 	}
 	else
 	{
 		// Find first unsed slot for child.
 
-		for(unsigned index = 0; index < __childrenSize; index++)
+		for(unsigned index = 0; index < _childrenSize; index++)
 		{
-			if(!__children[index])
+			if(!_children[index])
 			{
-				__children[index] = child;
-				__numChildren++;
+				_children[index] = child;
+				_numChildren++;
 				break;
 			}
 		}
@@ -108,15 +99,15 @@ void Surface::__removeChild(Surface* child)
 
 	bool childFound = false;
 
-	if(__children && __numChildren > 0)
+	if(_children && _numChildren > 0)
 	{
-		for(unsigned index = 0; index < __childrenSize; index++)
+		for(unsigned index = 0; index < _childrenSize; index++)
 		{
-			if(__children[index] == child)
+			if(_children[index] == child)
 			{
-				__children[index] = 0;
+				_children[index] = 0;
 				child -> __setParent(0);
-				__numChildren--;
+				_numChildren--;
 				childFound = true;
 				break;
 			}
@@ -132,5 +123,5 @@ void Surface::__removeChild(Surface* child)
 
 void Surface::__setParent(Surface* parent)
 {
-	__parent = parent;
+	_parent = parent;
 }

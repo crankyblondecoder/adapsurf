@@ -184,6 +184,9 @@ std::string DrmFramebuffer::getFourcc()
 
 void DrmFramebuffer::compose(Surface& surface)
 {
+	// TODO Posibly offer an option to create an intermediate buffer to compose into in case the bus between CPU and GPU on
+	// small form factor systems (like Pi Zero) is slow.
+
 	int srcPosnX = surface.getGlobalPositionX();
 	int srcPosnY = surface.getGlobalPositionY();
 
@@ -203,7 +206,6 @@ void DrmFramebuffer::compose(Surface& surface)
 	{
 		//    |---|-------------|---|
 
-		unsigned srcSize = surface.getPixelDataSize();
 		unsigned srcStride = surface.getPixelDataStride();
 
 		// Source line index to start copying from.
@@ -235,7 +237,7 @@ void DrmFramebuffer::compose(Surface& surface)
 		// Calculate initial source copy from position.
 		uint8_t* srcCpPosn = pixelData + srcStartLine * srcStride + srcLineStartOffset * 4;
 
-		// TODO ... Calculate initial fb copy to position.
+		// Calculate initial fb copy to position.
 		uint8_t* fbCpPosn = _fbMapAddr + (srcPosnY + srcStartLine) * _stride + (srcPosnX + srcLineStartOffset) * 4;
 
 		// Copy to current buffer while taking into account the pixel data has pre-multiplied alpha.
@@ -259,26 +261,30 @@ void DrmFramebuffer::compose(Surface& surface)
 				srcRed = *srcCpPosn++;
 				srcAlpha = *srcCpPosn++;
 
-				if(srcAlpha == 0xFF)
+				// No point in processing pixel if it is completely transparent.
+				if(srcAlpha > 0)
 				{
-					// Just straight copy is required.
+					if(srcAlpha == 0xFF)
+					{
+						// Just straight copy is required.
 
-					*fbCpPosn++ = srcBlue;
-					*fbCpPosn++ = srcGreen;
-					*fbCpPosn++ = srcRed;
-					*fbCpPosn += 2;
-				}
-				else
-				{
-					// Alpha blend.
-					effAlpha = 1.0 - ((double)srcAlpha / 255.0);
+						*fbCpPosn++ = srcBlue;
+						*fbCpPosn++ = srcGreen;
+						*fbCpPosn++ = srcRed;
+						*fbCpPosn += 2;
+					}
+					else
+					{
+						// Alpha blend.
+						effAlpha = 1.0 - ((double)srcAlpha / 255.0);
 
-					*fbCpPosn = srcBlue + (uint8_t)((double)(*fbCpPosn) * effAlpha);
-					fbCpPosn++;
-					*fbCpPosn = srcGreen + (uint8_t)((double)(*fbCpPosn) * effAlpha);
-					fbCpPosn++;
-					*fbCpPosn = srcRed + (uint8_t)((double)(*fbCpPosn) * effAlpha);
-					*fbCpPosn += 2;
+						*fbCpPosn = srcBlue + (uint8_t)((double)(*fbCpPosn) * effAlpha);
+						fbCpPosn++;
+						*fbCpPosn = srcGreen + (uint8_t)((double)(*fbCpPosn) * effAlpha);
+						fbCpPosn++;
+						*fbCpPosn = srcRed + (uint8_t)((double)(*fbCpPosn) * effAlpha);
+						*fbCpPosn += 2;
+					}
 				}
 			}
 
