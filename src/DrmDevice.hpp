@@ -28,10 +28,17 @@ namespace adapsurf {
 			DrmDevice(unsigned cardNumber, int connectorIndex);
 
 			/**
-			 * Describe the available DRM resources on std out.
+			 * Describe the available DRM resources on std out for this device.
 			 * @param prefTabNum Number of tabs to prefix the output with.
 			 */
 			void enumerateResources(unsigned prefTabNum);
+
+			/**
+			 * Enumerate resources for the given dri device card number.
+			 * @param cardNumber Device file card number to open.
+			 * @param prefTabNum Number of tabs to prefix standard output by.
+			 */
+			static void enumerateDeviceResources(unsigned cardNumber, unsigned prefTabNum);
 
 			/**
 			 * Do a page flip. ie Swap the ctrc to use the current framebuffer and make another framebuffer current.

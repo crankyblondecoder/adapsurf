@@ -376,6 +376,132 @@ void DrmDevice::enumerateResources(unsigned prefTabNum)
 	}
 }
 
+void DrmDevice::enumerateDeviceResources(unsigned cardNumber, unsigned prefTabNum)
+{
+	cout << "\n";
+
+	string prefixTabs;
+
+	for(unsigned index = 0; index < prefTabNum; index++)
+	{
+		prefixTabs += "\t";
+	}
+
+	string driDeviceFilePathName = "/dev/dri/card";
+	driDeviceFilePathName += to_string(cardNumber);
+
+	int deviceFd = open(driDeviceFilePathName.c_str(), O_RDWR);
+
+	if(deviceFd < 0)
+	{
+		string msg = "Could not open device:";
+		msg += driDeviceFilePathName;
+
+		cout << msg << "\n";
+	}
+
+	drmModeResPtr drmResources = drmModeGetResources(deviceFd);
+
+	if(!drmResources)
+	{
+		string msg = "Could not get drm resources for card: ";
+		msg += driDeviceFilePathName;
+
+		cout << msg << "\n";
+	}
+
+	if(deviceFd && drmResources)
+	{
+		uint64_t capValue;
+
+		cout << prefixTabs << "DRM Resources\n";
+		cout << prefixTabs << "-------------\n";
+		cout << prefixTabs << "Device: " << driDeviceFilePathName << "\n";
+
+		if(!drmGetCap(deviceFd, DRM_CAP_DUMB_BUFFER, &capValue)) {
+
+			bool dumbBufferSupport = capValue > 0;
+			cout << prefixTabs << "Dumb buffer support: " << (dumbBufferSupport ? "true" : "false") << "\n";
+		}
+
+		if(!drmGetCap(deviceFd, DRM_CAP_DUMB_PREFERRED_DEPTH, &capValue)) {
+
+			bool dumbBufferPrefDepth = capValue;
+			cout << prefixTabs << "Dumb buffer pref depth: " << dumbBufferPrefDepth << "\n";
+		}
+
+		cout << prefixTabs << "Min Width: " << drmResources -> min_width << "  Max Width: " << drmResources -> max_width << "\n";
+		cout << prefixTabs << "Min Height: " << drmResources -> min_height << "  Max Height: " << drmResources -> max_height << "\n";
+		cout << prefixTabs << "Framebuffer Count: " << drmResources -> count_fbs << "\n";
+		cout << prefixTabs << "CRTC Count: " << drmResources -> count_crtcs << "\n";
+		cout << prefixTabs << "Connector Count: " << drmResources -> count_connectors << "\n";
+		cout << prefixTabs << "Encoder Count: " << drmResources -> count_encoders << "\n\n";
+
+		cout << prefixTabs << "Connector Info:\n";
+		for(int index = 0; index < drmResources -> count_connectors; index++)
+		{
+			drmModeConnectorPtr connectPtr = drmModeGetConnector(deviceFd, drmResources -> connectors[index]);
+
+			if(connectPtr)
+			{
+				cout << prefixTabs << "\tType:" << connectorTypeName(connectPtr -> connector_type) << "\n";
+				cout << prefixTabs << "\tmmWidth:" << connectPtr -> mmWidth << "\n";
+				cout << prefixTabs << "\tmmHeight:" << connectPtr -> mmHeight << "\n";
+
+				if(connectPtr -> connection == drmModeConnection::DRM_MODE_CONNECTED)
+				{
+					cout << prefixTabs << "\tConnectionStatus: CONNECTED" << "\n";
+				}
+				else if(connectPtr -> connection == drmModeConnection::DRM_MODE_DISCONNECTED)
+				{
+					cout << prefixTabs << "\tConnectionStatus: DISCONNECTED" << "\n";
+				}
+
+				drmModeModeInfo mode;
+
+				for(int modeIndex = 0; modeIndex < connectPtr -> count_modes; modeIndex++)
+				{
+					mode = connectPtr -> modes[modeIndex];
+
+					cout << prefixTabs << "\tMode Index: " << modeIndex << "\n";
+
+					if(mode.type & DRM_MODE_TYPE_PREFERRED)
+					{
+						cout << prefixTabs << "\t\tPref horiz display size: " << mode.hdisplay << "\n";
+						cout << prefixTabs << "\t\tPref vert display size: " << mode.vdisplay << "\n";
+					}
+
+					if(mode.type & DRM_MODE_TYPE_DRIVER)
+					{
+						cout << prefixTabs << "\t\tDriver horiz display size: " << mode.hdisplay << "\n";
+						cout << prefixTabs << "\t\tDriver vert display size: " << mode.vdisplay << "\n";
+					}
+
+					if(mode.type & DRM_MODE_TYPE_USERDEF)
+					{
+						cout << prefixTabs << "\t\tUserdef horiz display size: " << mode.hdisplay << "\n";
+						cout << prefixTabs << "\t\tUserdef vert display size: " << mode.vdisplay << "\n";
+					}
+				}
+			}
+
+			drmModeFreeConnector(connectPtr);
+		}
+	}
+
+	if(drmResources)
+	{
+		drmModeFreeResources(drmResources);
+	}
+
+	if(deviceFd >= 0)
+	{
+		close(deviceFd);
+	}
+
+	cout << "\n";
+}
+
 void DrmDevice::pageFlip()
 {
 	if(drmSetMaster(_deviceFd) == -1)

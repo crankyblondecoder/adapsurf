@@ -19,7 +19,7 @@ test : adsUnitTest.o adsTest.cpp
 	@echo
 	@echo "*** Building - Test ***"
 	@echo
-	$(cname) $(cflags) -o adsTest $(sourceLocn)adsTest.cpp adsUnitTest.o $(addprefix ../debug/, $(objFiles)) -l$(libs)
+	$(cname) $(cflags) -o adsTest $(sourceLocn)adsTest.cpp adsUnitTest.o $(addprefix ../debug/, $(objFiles)) $(addprefix -l, $(libs))
 	@echo
 	@echo
 
@@ -27,7 +27,7 @@ adsUnitTest.o : adsUnitTest.cpp adsUnitTest.hpp
 
 .PHONY : clean
 clean :
-	rm *.o *.dep adsTest
+	rm *.o *.dep adsTest cardinfo
 
 .PHONY : runtest
 runtest : test
@@ -35,5 +35,13 @@ runtest : test
 	@echo "*** Running - Test ***"
 	@echo
 	./adsTest
+	@echo
+	@echo
+
+cardinfo : cardinfo.cpp
+	@echo
+	@echo "*** Building - Card Info ***"
+	@echo
+	$(cname) $(cflags) -o cardinfo $(sourceLocn)cardinfo.cpp $(addprefix ../debug/, $(objFiles)) $(addprefix -l, $(libs))
 	@echo
 	@echo

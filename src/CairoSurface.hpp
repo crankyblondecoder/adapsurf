@@ -16,6 +16,9 @@ namespace adapsurf {
 	{
 		public:
 
+			/** Cairo context. This is public for speed. */
+			cairo_t* cairoContext;
+
 			virtual ~CairoSurface();
 
 			/**

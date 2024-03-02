@@ -198,7 +198,7 @@ void DrmFramebuffer::compose(Surface& surface)
 	unsigned srcEndY = srcPosnY + srcHeight - 1;
 
 	// Short circuit the composition if none of the target surface is within this framebuffer.
-	if(srcPosnX >= _width || srcPosnY >= _height || srcEndX < 0 || srcEndY < 0) return;
+	if(srcPosnX >= (int)_width || srcPosnY >= (int)_height || srcEndX < 0 || srcEndY < 0) return;
 
 	uint8_t* pixelData = surface.getPixelData();
 

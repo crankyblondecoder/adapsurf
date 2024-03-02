@@ -6,6 +6,7 @@ using namespace adapsurf;
 CairoSurface::~CairoSurface()
 {
 	if(_cSurface) cairo_surface_destroy(_cSurface);
+	if(cairoContext) cairo_destroy(cairoContext);
 }
 
 CairoSurface::CairoSurface(int localPositionX, int localPositionY, int width, int height) :
@@ -16,6 +17,16 @@ CairoSurface::CairoSurface(int localPositionX, int localPositionY, int width, in
 	if(!_cSurface)
 	{
 		std::string msg("Could not create a valid cairo surface.");
+		throw Exception(Exception::Error::SURF_COULD_NOT_CREATE, msg);
+	}
+
+	cairoContext = cairo_create(_cSurface);
+
+	if(cairo_status(cairoContext) == cairo_status_t::CAIRO_STATUS_NO_MEMORY)
+	{
+		cairoContext = 0;
+
+		std::string msg("Could not create a cairo context. No memory.");
 		throw Exception(Exception::Error::SURF_COULD_NOT_CREATE, msg);
 	}
 }
