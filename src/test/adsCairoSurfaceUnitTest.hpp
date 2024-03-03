@@ -31,6 +31,9 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 			}
 
 			destroyDevice();
+
+			// Catch all for all passed.
+			if(allPassed) _notifyTestResult("Cairo Surface Tests", true, "All tests passed.");
 		}
 
 	private:
@@ -75,9 +78,6 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 
 				sleep(2);
 			}
-
-			// Catch all for all passed.
-			if(allPassed) _notifyTestResult("DRM Device Construction", true, "All tests passed.");
 		}
 
 		void destroyDevice()

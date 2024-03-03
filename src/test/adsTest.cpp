@@ -1,3 +1,4 @@
+#include "adsCairoSurfaceUnitTest.hpp"
 #include "adsDrmDeviceUnitTest.hpp"
 
 #include <iostream>
@@ -38,6 +39,9 @@ int main(int argc, char* argv[])
 
 	adsDrmDeviceUnitTest drmDeviceTest;
 	drmDeviceTest.run();
+
+	adsCairoSurfaceUnitTest cairoSurfaceTest;
+	cairoSurfaceTest.run();
 
 	cout << "*** Adapsurf Unit Tests complete ***\n";
 }
