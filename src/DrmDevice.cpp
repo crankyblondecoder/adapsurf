@@ -485,6 +485,8 @@ void DrmDevice::enumerateDeviceResources(unsigned cardNumber, unsigned prefTabNu
 						cout << prefixTabs << "\t\tUserdef vert display size: " << mode.vdisplay << "\n";
 					}
 				}
+
+				cout << "\n";
 			}
 
 			drmModeFreeConnector(connectPtr);
