@@ -192,6 +192,8 @@ DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
 
 	// Look for suitable mode that connector publishes.
 
+	// TODO ... Use specified mode index and only fall back to preferred mode if not specified.
+
 	for(int modeIndex = 0; modeIndex < _connector -> count_modes; modeIndex++)
 	{
 		drmModeModeInfoPtr mode = _connector -> modes + modeIndex;
