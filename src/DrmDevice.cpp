@@ -323,13 +323,14 @@ void DrmDevice::enumerateResources(unsigned prefTabNum)
 		cout << prefixTabs << "Connector Count: " << _drmResources -> count_connectors << "\n";
 		cout << prefixTabs << "Encoder Count: " << _drmResources -> count_encoders << "\n\n";
 
-		cout << prefixTabs << "Connector Info:\n";
+		cout << prefixTabs << "Connector Info:\n\n";
 		for(int index = 0; index < _drmResources -> count_connectors; index++)
 		{
 			drmModeConnectorPtr connectPtr = drmModeGetConnector(_deviceFd, _drmResources -> connectors[index]);
 
 			if(connectPtr)
 			{
+				cout << prefixTabs << "\tConnector Index: " << index << "\n";
 				cout << prefixTabs << "\tType:" << connectorTypeName(connectPtr -> connector_type) << "\n";
 				cout << prefixTabs << "\tmmWidth:" << connectPtr -> mmWidth << "\n";
 				cout << prefixTabs << "\tmmHeight:" << connectPtr -> mmHeight << "\n";
@@ -437,13 +438,14 @@ void DrmDevice::enumerateDeviceResources(unsigned cardNumber, unsigned prefTabNu
 		cout << prefixTabs << "Connector Count: " << drmResources -> count_connectors << "\n";
 		cout << prefixTabs << "Encoder Count: " << drmResources -> count_encoders << "\n\n";
 
-		cout << prefixTabs << "Connector Info:\n";
+		cout << prefixTabs << "Connector Info:\n\n";
 		for(int index = 0; index < drmResources -> count_connectors; index++)
 		{
 			drmModeConnectorPtr connectPtr = drmModeGetConnector(deviceFd, drmResources -> connectors[index]);
 
 			if(connectPtr)
 			{
+				cout << prefixTabs << "\tConnector Index: " << index << "\n";
 				cout << prefixTabs << "\tType:" << connectorTypeName(connectPtr -> connector_type) << "\n";
 				cout << prefixTabs << "\tmmWidth:" << connectPtr -> mmWidth << "\n";
 				cout << prefixTabs << "\tmmHeight:" << connectPtr -> mmHeight << "\n";
