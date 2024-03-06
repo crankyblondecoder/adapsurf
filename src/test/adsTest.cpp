@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
 	if(argc > 4)
 	{
 		// The fourth param is the mode number.
-		connectorNumber = atoi(argv[4]);
+		modeNumber = atoi(argv[4]);
 	}
 
 	cout << "\n*** Starting Adapsurf Unit Tests ***\n\n";
