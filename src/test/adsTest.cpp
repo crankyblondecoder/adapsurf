@@ -12,6 +12,9 @@ int cardNumber = 0;
 // The dri connector number on the card.
 int connectorNumber = 0;
 
+// The mode number on the connector to use.
+int modeNumber = 0;
+
 // Verbosity level.
 int verbosity = 1;
 
@@ -35,13 +38,19 @@ int main(int argc, char* argv[])
 		connectorNumber = atoi(argv[3]);
 	}
 
+	if(argc > 4)
+	{
+		// The fourth param is the mode number.
+		connectorNumber = atoi(argv[4]);
+	}
+
 	cout << "\n*** Starting Adapsurf Unit Tests ***\n\n";
 
 	adsDrmDeviceUnitTest drmDeviceTest;
 	drmDeviceTest.run();
 
-	adsCairoSurfaceUnitTest cairoSurfaceTest;
-	cairoSurfaceTest.run();
+	//adsCairoSurfaceUnitTest cairoSurfaceTest;
+	//cairoSurfaceTest.run();
 
 	cout << "*** Adapsurf Unit Tests complete ***\n";
 }

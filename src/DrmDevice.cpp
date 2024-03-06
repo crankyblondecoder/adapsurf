@@ -4,6 +4,8 @@
 #include <string>
 #include <unistd.h>
 
+using namespace std;
+
 #include "DrmDevice.hpp"
 #include "DrmFramebuffer.hpp"
 #include "Exception.hpp"
@@ -88,7 +90,7 @@ void DrmDevice::__dealloc()
 	}
 }
 
-DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
+DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex, int modeIndex)
 	: _deviceFdAlloc{false}, _drmResourcesAlloc{false}, _connectorAlloc{false}, _connectorMode{0}, _curFbNum{0}
 {
 	_driDeviceFilePathName = "/dev/dri/card";
@@ -138,7 +140,17 @@ DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
 
 	if(!drmGetCap(_deviceFd, DRM_CAP_DUMB_PREFERRED_DEPTH, &capValue)) {
 
-		_dumbBufferPrefDepth = capValue;
+		if(capValue == 0)
+		{
+			cout << "Warning: Dumb buffer preferred depth is 0. A depth of 24 will be assumed.\n";
+
+			// Default to 24 bits.
+			_dumbBufferPrefDepth = 24;
+		}
+		else
+		{
+			_dumbBufferPrefDepth = capValue;
+		}
 
 	} else {
 
@@ -191,21 +203,27 @@ DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex)
 	}
 
 	// Look for suitable mode that connector publishes.
+	// Use specified mode index and only fall back to preferred mode if not specified.
 
-	// TODO ... Use specified mode index and only fall back to preferred mode if not specified.
-
-	for(int modeIndex = 0; modeIndex < _connector -> count_modes; modeIndex++)
+	if(modeIndex >= 0 && modeIndex < _connector -> count_modes)
 	{
-		drmModeModeInfoPtr mode = _connector -> modes + modeIndex;
-
-		if(mode -> type & DRM_MODE_TYPE_PREFERRED)
+		_connectorMode = _connector -> modes + modeIndex;
+	}
+	else
+	{
+		for(int modeIdx = 0; modeIdx < _connector -> count_modes; modeIdx++)
 		{
-			_connectorMode = mode;
-			break;
-		}
+			drmModeModeInfoPtr mode = _connector -> modes + modeIdx;
 
-		// Use the first found node unless a preferred node is found.
-		if(!_connectorMode) _connectorMode = mode;
+			if(mode -> type & DRM_MODE_TYPE_PREFERRED)
+			{
+				_connectorMode = mode;
+				break;
+			}
+
+			// Use the first found node unless a preferred node is found.
+			if(!_connectorMode) _connectorMode = mode;
+		}
 	}
 
 	if(!_connectorMode)

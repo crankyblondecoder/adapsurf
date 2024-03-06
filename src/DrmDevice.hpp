@@ -24,8 +24,9 @@ namespace adapsurf {
 			/**
 			 * @param cardNumber Device file card number. This is appended to "/dev/dri/card"
 			 * @param connectorIndex Index of connector (display) to use. -1 To use the first available connected connector.
+			 * @param modeIndex Index of mode that connector publishes to use. -1 To use preferred mode.
 			 */
-			DrmDevice(unsigned cardNumber, int connectorIndex);
+			DrmDevice(unsigned cardNumber, int connectorIndex, int modeIndex);
 
 			/**
 			 * Describe the available DRM resources on std out for this device.
