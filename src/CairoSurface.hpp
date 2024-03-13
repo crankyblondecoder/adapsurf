@@ -16,9 +16,6 @@ namespace adapsurf {
 	{
 		public:
 
-			/** Cairo context. This is public for speed. */
-			cairo_t* cairoContext;
-
 			virtual ~CairoSurface();
 
 			/**
@@ -44,10 +41,20 @@ namespace adapsurf {
 
 		protected:
 
+			/** Get the cairo context which is used to draw to the surface. */
+			cairo_t* _getContext();
+
+			unsigned _getWidth();
+
+			unsigned _getHeight();
+
 		private:
 
 			/** Cairo surface to render to. */
 			cairo_surface_t* _cSurface;
+
+			/** Cairo context. */
+			cairo_t* _cairoContext;
 	};
 }
 

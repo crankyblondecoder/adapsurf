@@ -6,7 +6,7 @@ using namespace adapsurf;
 CairoSurface::~CairoSurface()
 {
 	if(_cSurface) cairo_surface_destroy(_cSurface);
-	if(cairoContext) cairo_destroy(cairoContext);
+	if(_cairoContext) cairo_destroy(_cairoContext);
 }
 
 CairoSurface::CairoSurface(int localPositionX, int localPositionY, int width, int height) :
@@ -20,13 +20,13 @@ CairoSurface::CairoSurface(int localPositionX, int localPositionY, int width, in
 		throw Exception(Exception::Error::SURF_COULD_NOT_CREATE, msg);
 	}
 
-	cairoContext = cairo_create(_cSurface);
+	_cairoContext = cairo_create(_cSurface);
 
-	if(cairo_status(cairoContext) == cairo_status_t::CAIRO_STATUS_NO_MEMORY)
+	if(cairo_status(_cairoContext) == cairo_status_t::CAIRO_STATUS_NO_MEMORY)
 	{
 		cairo_surface_destroy(_cSurface);
 
-		cairoContext = 0;
+		_cairoContext = 0;
 
 		std::string msg("Could not create a cairo context. No memory.");
 		throw Exception(Exception::Error::SURF_COULD_NOT_CREATE, msg);
@@ -56,6 +56,11 @@ unsigned CairoSurface::getPixelDataStride()
 
 unsigned CairoSurface::getWidth()
 {
+	return _getWidth();
+}
+
+unsigned CairoSurface::_getWidth()
+{
 	if(_cSurface) {
 
 		return cairo_image_surface_get_width(_cSurface);
@@ -66,10 +71,20 @@ unsigned CairoSurface::getWidth()
 
 unsigned CairoSurface::getHeight()
 {
+	return _getHeight();
+}
+
+unsigned CairoSurface::_getHeight()
+{
 	if(_cSurface) {
 
 		return cairo_image_surface_get_height(_cSurface);
 	}
 
 	return 0;
+}
+
+cairo_t* CairoSurface::_getContext()
+{
+	return _cairoContext;
 }

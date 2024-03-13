@@ -55,6 +55,9 @@ namespace adapsurf {
 			// Impl.
 			uint32_t getDisplayResolutionHeight();
 
+			// Impl.
+			Framebuffer* getDrawToFramebuffer();
+
 		protected:
 
 		private:

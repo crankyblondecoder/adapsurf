@@ -591,3 +591,8 @@ uint32_t DrmDevice::getDisplayResolutionHeight()
 
 	return 0;
 }
+
+Framebuffer* DrmDevice::getDrawToFramebuffer()
+{
+	return __getBackBuffer();
+}

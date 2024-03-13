@@ -27,6 +27,11 @@ namespace adapsurf {
 			 */
 			virtual uint32_t getDisplayResolutionHeight() = 0;
 
+			/**
+			 * Get the framebuffer to draw to.
+			 */
+			virtual Framebuffer* getDrawToFramebuffer() = 0;
+
 		protected:
 
 		private:

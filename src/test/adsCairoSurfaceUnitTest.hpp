@@ -65,35 +65,41 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 		{
 			if(device)
 			{
-				CairoSurface* surface = 0;
+				uint32_t dispWidth = device -> getDisplayResolutionWidth();
+				uint32_t dispHeight = device -> getDisplayResolutionHeight();
+
+				// Make sure both buffers are cleared.
+				device -> clear(0.0, 0.0, 0.0);
+				device -> pageFlip();
+				device -> clear(0.0, 0.0, 0.0);
+				device -> pageFlip();
+
+				TestDraw1* surf1 = 0;
 
 				// Try and construct a cairo surface.
 				try
 				{
-					surface = new CairoSurface(0, 0, device -> getDisplayResolutionWidth(),
-						device -> getDisplayResolutionHeight());
+					surf1 = new TestDraw1(dispWidth, dispHeight);
 				}
 				catch(const Exception& ex)
 				{
 					allPassed = false;
 
-					std::string msg("Exception during construction of cairo surface: ");
+					std::string msg("Exception during construction of cairo test surface: ");
 					msg += ex.getErrorDescr();
 
 					_notifyTestResult("Cairo Surface Tests", false, msg);
 				}
 
-				if(surface)
+				if(surf1)
 				{
-					// Make sure both buffers are cleared.
-					device -> clear(0.0, 0.0, 0.0);
+					surf1 -> draw();
+					Framebuffer* drawToBuf = device -> getDrawToFramebuffer();
+					drawToBuf -> compose(*surf1);
 					device -> pageFlip();
-					device -> clear(0.0, 0.0, 0.0);
-					device -> pageFlip();
+					sleep(2);
 
-					// TODO ... Do some basic drawing.
-
-					//sleep(2);
+					delete surf1;
 				}
 			}
 		}
@@ -105,4 +111,29 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 				delete device;
 			}
 		}
+
+		class TestDraw1 : public CairoSurface
+		{
+			public:
+
+				TestDraw1(uint32_t dispWidth, uint32_t dispHeight) : CairoSurface(0, 0, dispWidth, dispHeight)
+				{
+				}
+
+				virtual ~TestDraw1()
+				{
+				}
+
+				void draw()
+				{
+					cairo_t* ctx = _getContext();
+
+					if(ctx)
+					{
+						cairo_set_source_rgb(ctx, 1.0, 0, 0);
+						cairo_rectangle(ctx, 20, 20, _getWidth() - 20, _getHeight() - 20);
+						cairo_fill(ctx);
+					}
+				}
+		};
 };
