@@ -15,7 +15,7 @@ namespace adapsurf {
 	/**
 	 * Linux DRM based device.
 	 */
-	class DrmDevice
+	class DrmDevice : public Device
 	{
 		public:
 
@@ -48,6 +48,12 @@ namespace adapsurf {
 
 			/** Clear the back buffer with the given colour. */
 			void clear(double red, double green, double blue);
+
+			// Impl.
+			uint32_t getDisplayResolutionWidth();
+
+			// Impl.
+			uint32_t getDisplayResolutionHeight();
 
 		protected:
 

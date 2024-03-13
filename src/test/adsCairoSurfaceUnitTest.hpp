@@ -4,6 +4,7 @@
 #include <unistd.h>
 
 #include "adsUnitTest.hpp"
+#include "../CairoSurface.hpp"
 #include "../DrmDevice.hpp"
 #include "../Exception.hpp"
 
@@ -64,20 +65,36 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 		{
 			if(device)
 			{
-				device -> clear(1.0, 0.0, 0.0);
-				device -> pageFlip();
+				CairoSurface* surface = 0;
 
-				sleep(2);
+				// Try and construct a cairo surface.
+				try
+				{
+					surface = new CairoSurface(0, 0, device -> getDisplayResolutionWidth(),
+						device -> getDisplayResolutionHeight());
+				}
+				catch(const Exception& ex)
+				{
+					allPassed = false;
 
-				device -> clear(0.0, 1.0, 0.0);
-				device -> pageFlip();
+					std::string msg("Exception during construction of cairo surface: ");
+					msg += ex.getErrorDescr();
 
-				sleep(2);
+					_notifyTestResult("Cairo Surface Tests", false, msg);
+				}
 
-				device -> clear(0.0, 0.0, 1.0);
-				device -> pageFlip();
+				if(surface)
+				{
+					// Make sure both buffers are cleared.
+					device -> clear(0.0, 0.0, 0.0);
+					device -> pageFlip();
+					device -> clear(0.0, 0.0, 0.0);
+					device -> pageFlip();
 
-				sleep(2);
+					// TODO ... Do some basic drawing.
+
+					//sleep(2);
+				}
 			}
 		}
 

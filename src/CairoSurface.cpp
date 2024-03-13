@@ -24,6 +24,8 @@ CairoSurface::CairoSurface(int localPositionX, int localPositionY, int width, in
 
 	if(cairo_status(cairoContext) == cairo_status_t::CAIRO_STATUS_NO_MEMORY)
 	{
+		cairo_surface_destroy(_cSurface);
+
 		cairoContext = 0;
 
 		std::string msg("Could not create a cairo context. No memory.");

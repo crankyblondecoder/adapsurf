@@ -312,7 +312,7 @@ DrmFramebuffer* DrmDevice::__generateFramebuffer()
 		throw Exception(Exception::Error::DRM_CREATE_FRAME_BUFFER_FAIL, msg);
 	}
 
-	// For now just set width and height to the first mode found.
+	// Use the connector modes resolution.
 	uint32_t width = _connectorMode -> hdisplay;
 	uint32_t height = _connectorMode -> vdisplay;
 
@@ -576,4 +576,18 @@ void DrmDevice::clear(double red, double green, double blue)
 	{
 		backBuf -> clear(red, green, blue);
 	}
+}
+
+uint32_t DrmDevice::getDisplayResolutionWidth()
+{
+	if(_connectorMode) return _connectorMode -> hdisplay;
+
+	return 0;
+}
+
+uint32_t DrmDevice::getDisplayResolutionHeight()
+{
+	if(_connectorMode) return _connectorMode -> vdisplay;
+
+	return 0;
 }

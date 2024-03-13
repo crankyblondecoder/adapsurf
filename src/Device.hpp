@@ -1,6 +1,8 @@
 #ifndef ADS_DEVICE_H
 #define ADS_DEVICE_H
 
+#include <cstdint>
+
 #include "Framebuffer.hpp"
 
 namespace adapsurf {
@@ -14,6 +16,16 @@ namespace adapsurf {
 
 			virtual ~Device(){};
 			Device(){};
+
+			/**
+			 * Get the width, in pixels, of the displays resolution.
+			 */
+			virtual uint32_t getDisplayResolutionWidth() = 0;
+
+			/**
+			 * Get the height, in pixels, of the displays resolution.
+			 */
+			virtual uint32_t getDisplayResolutionHeight() = 0;
 
 		protected:
 

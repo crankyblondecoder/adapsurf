@@ -37,10 +37,10 @@ namespace adapsurf {
 			virtual unsigned getPixelDataStride();
 
 			// Impl.
-			virtual unsigned getWidth() = 0;
+			virtual unsigned getWidth();
 
 			// Impl.
-			virtual unsigned getHeight() = 0;
+			virtual unsigned getHeight();
 
 		protected:
 
