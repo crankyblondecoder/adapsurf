@@ -9,7 +9,7 @@ VPATH = ../../src/ : ../../src/test/
 sourceLocn = ../../src/test/
 
 cname = g++
-cflags = -Wall -fPIC -g
+cflags = -Wall -fPIC -g3 -Og
 
 CXX = $(cname)
 CXXFLAGS = $(cflags)
