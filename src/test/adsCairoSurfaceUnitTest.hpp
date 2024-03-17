@@ -131,7 +131,7 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 					if(ctx)
 					{
 						cairo_set_source_rgb(ctx, 1.0, 0, 0);
-						cairo_rectangle(ctx, 20, 20, _getWidth() - 20, _getHeight() - 20);
+						cairo_rectangle(ctx, 0, 0, _getWidth(), _getHeight());
 						cairo_fill(ctx);
 					}
 				}
