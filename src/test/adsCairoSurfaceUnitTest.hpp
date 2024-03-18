@@ -109,7 +109,7 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 					surf1 -> clear(1.0, 1.0, 1.0, 1.0);
 					surf1 -> draw1();
 					surf2 -> clear(0.0, 0.0, 0.0, 0.0);
-					surf2 -> draw2();
+					//surf2 -> draw2();
 					Framebuffer* drawToBuf = device -> getDrawToFramebuffer();
 					drawToBuf -> compose(*surf1);
 					drawToBuf -> compose(*surf2);
