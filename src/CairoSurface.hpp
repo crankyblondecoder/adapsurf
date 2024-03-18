@@ -39,6 +39,14 @@ namespace adapsurf {
 			// Impl.
 			virtual unsigned getHeight();
 
+			/**
+			 * Clear this surface.
+			 * @param red Red component.
+			 * @param green Green component.
+			 * @param blue Blue component.
+			 */
+			void clear(double red, double green, double blue);
+
 		protected:
 
 			/** Get the cairo context which is used to draw to the surface. */

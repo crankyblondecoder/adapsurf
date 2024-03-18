@@ -93,7 +93,8 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 
 				if(surf1)
 				{
-					surf1 -> draw();
+					surf1 -> clear(1.0, 1.0, 1.0);
+					surf1 -> draw1();
 					Framebuffer* drawToBuf = device -> getDrawToFramebuffer();
 					drawToBuf -> compose(*surf1);
 					device -> pageFlip();
@@ -124,19 +125,17 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 				{
 				}
 
-				void draw()
+				void draw1()
 				{
 					cairo_t* ctx = _getContext();
 
 					if(ctx)
 					{
-						cairo_set_source_rgb(ctx, 1.0, 1.0, 1.0);
-						cairo_rectangle(ctx, 0, 0, _getWidth(), _getHeight());
+						// RGB 252, 165, 3
+						cairo_set_source_rgb(ctx, 252.0/255.0, 165.0/255.0, 3.0/255.0);
+						cairo_rectangle(ctx, 0, 0, _getWidth() * 3 / 4, _getHeight() * 3 / 4);
 						cairo_fill(ctx);
 					}
 				}
 		};
-
-		// RGB 252, 165, 3
-		// cairo_set_source_rgb(ctx, 252.0/255.0, 165.0/255.0, 3.0/255.0);
 };
