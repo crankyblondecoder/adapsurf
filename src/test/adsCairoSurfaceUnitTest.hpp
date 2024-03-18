@@ -75,11 +75,13 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 				device -> pageFlip();
 
 				TestDraw1* surf1 = 0;
+				TestDraw1* surf2 = 0;
 
 				// Try and construct a cairo surface.
 				try
 				{
 					surf1 = new TestDraw1(dispWidth, dispHeight);
+					surf2 = new TestDraw1(dispWidth, dispHeight);
 				}
 				catch(const Exception& ex)
 				{
@@ -93,16 +95,30 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 
 				if(surf1)
 				{
-					surf1 -> clear(1.0, 1.0, 1.0);
+					surf1 -> clear(1.0, 1.0, 1.0, 1.0);
 					surf1 -> draw1();
 					surf1 -> draw2();
 					Framebuffer* drawToBuf = device -> getDrawToFramebuffer();
 					drawToBuf -> compose(*surf1);
 					device -> pageFlip();
 					sleep(2);
-
-					delete surf1;
 				}
+
+				if(surf1 && surf2)
+				{
+					surf1 -> clear(1.0, 1.0, 1.0, 1.0);
+					surf1 -> draw1();
+					surf2 -> clear(0.0, 0.0, 0.0, 0.0);
+					surf2 -> draw2();
+					Framebuffer* drawToBuf = device -> getDrawToFramebuffer();
+					drawToBuf -> compose(*surf1);
+					drawToBuf -> compose(*surf2);
+					device -> pageFlip();
+					sleep(2);
+				}
+
+				if(surf1) delete surf1;
+				if(surf2) delete surf2;
 			}
 		}
 

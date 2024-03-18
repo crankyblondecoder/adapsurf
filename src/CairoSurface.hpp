@@ -44,8 +44,9 @@ namespace adapsurf {
 			 * @param red Red component.
 			 * @param green Green component.
 			 * @param blue Blue component.
+			 * @param alpha Alpha component.
 			 */
-			void clear(double red, double green, double blue);
+			void clear(double red, double green, double blue, double alpha);
 
 		protected:
 

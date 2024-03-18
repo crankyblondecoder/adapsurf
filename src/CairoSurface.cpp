@@ -89,11 +89,11 @@ cairo_t* CairoSurface::_getContext()
 	return _cairoContext;
 }
 
-void CairoSurface::clear(double red, double green, double blue)
+void CairoSurface::clear(double red, double green, double blue, double alpha)
 {
 	if(_cairoContext)
 	{
-		cairo_set_source_rgb(_cairoContext, red, green, blue);
+		cairo_set_source_rgba(_cairoContext, red, green, blue, alpha);
 		cairo_paint(_cairoContext);
 	}
 }
