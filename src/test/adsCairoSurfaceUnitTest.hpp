@@ -130,7 +130,8 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 
 					if(ctx)
 					{
-						cairo_set_source_rgb(ctx, 1.0, 0, 0);
+						// RGB 252, 165, 3
+						cairo_set_source_rgb(ctx, 252/255, 165/255, 3/255);
 						cairo_rectangle(ctx, 0, 0, _getWidth(), _getHeight());
 						cairo_fill(ctx);
 					}
