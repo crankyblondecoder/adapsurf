@@ -268,9 +268,11 @@ void DrmFramebuffer::compose(Surface& surface)
 					{
 						// Just straight copy is required.
 
-						*fbCpPosn++ = srcBlue;
-						*fbCpPosn++ = srcGreen;
-						*fbCpPosn++ = srcRed;
+						*fbCpPosn = srcBlue;
+						fbCpPosn++;
+						*fbCpPosn = srcGreen;
+						fbCpPosn++;
+						*fbCpPosn = srcRed;
 						*fbCpPosn += 2;
 					}
 					else
