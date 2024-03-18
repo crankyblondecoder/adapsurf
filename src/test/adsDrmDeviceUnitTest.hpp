@@ -60,17 +60,17 @@ class adsDrmDeviceUnitTest : public adsUnitTest
 				device -> clear(1.0, 0.0, 0.0);
 				device -> pageFlip();
 
-				sleep(2);
+				sleep(1);
 
 				device -> clear(0.0, 1.0, 0.0);
 				device -> pageFlip();
 
-				sleep(2);
+				sleep(1);
 
 				device -> clear(0.0, 0.0, 1.0);
 				device -> pageFlip();
 
-				sleep(2);
+				sleep(1);
 
 				delete device;
 			}
