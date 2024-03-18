@@ -38,6 +38,9 @@ namespace adapsurf {
 			// Override.
 			void compose(Surface& surface);
 
+			/** Peek into the memory of this framebuffer. */
+			uint8_t peek(unsigned offset);
+
 		protected:
 
 		private:

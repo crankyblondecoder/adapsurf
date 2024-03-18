@@ -293,3 +293,8 @@ void DrmFramebuffer::compose(Surface& surface)
 		}
 	}
 }
+
+uint8_t DrmFramebuffer::peek(unsigned offset)
+{
+	return *(_fbMapAddr + offset);
+}
