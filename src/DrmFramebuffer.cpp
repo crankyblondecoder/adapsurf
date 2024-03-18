@@ -273,7 +273,7 @@ void DrmFramebuffer::compose(Surface& surface)
 						*fbCpPosn = srcGreen;
 						fbCpPosn++;
 						*fbCpPosn = srcRed;
-						*fbCpPosn += 2;
+						fbCpPosn += 2;
 					}
 					else
 					{
@@ -285,7 +285,7 @@ void DrmFramebuffer::compose(Surface& surface)
 						*fbCpPosn = srcGreen + (uint8_t)((double)(*fbCpPosn) * effAlpha);
 						fbCpPosn++;
 						*fbCpPosn = srcRed + (uint8_t)((double)(*fbCpPosn) * effAlpha);
-						*fbCpPosn += 2;
+						fbCpPosn += 2;
 					}
 				}
 			}

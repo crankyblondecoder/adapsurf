@@ -38,7 +38,7 @@ namespace adapsurf {
 			// Override.
 			void compose(Surface& surface);
 
-			/** Peek into the memory of this framebuffer. */
+			/** Peek into the memory of this framebuffer. Exists to help with debug of mmap'd device memory. */
 			uint8_t peek(unsigned offset);
 
 		protected:
