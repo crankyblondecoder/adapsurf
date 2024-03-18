@@ -97,7 +97,7 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 				{
 					Framebuffer* drawToBuf = device -> getDrawToFramebuffer();
 
-					if(verbosity > 0) _outputLevelIndentTabs(); cout << "Frame 1\n";
+					if(verbosity > 0) { _outputLevelIndentTabs(); cout << "Frame 1\n"; }
 
 					surf1 -> clear(1.0, 1.0, 1.0, 1.0);
 					surf1 -> draw1();
@@ -107,7 +107,7 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 
 					drawToBuf = device -> getDrawToFramebuffer();
 
-					if(verbosity > 0) _outputLevelIndentTabs(); cout << "Frame 2\n";
+					if(verbosity > 0) { _outputLevelIndentTabs(); cout << "Frame 2\n"; }
 
 					surf1 -> clear(1.0, 1.0, 1.0, 1.0);
 					surf1 -> draw2();
@@ -117,7 +117,7 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 
 					drawToBuf = device -> getDrawToFramebuffer();
 
-					if(verbosity > 0) _outputLevelIndentTabs(); cout << "Frame 3\n";
+					if(verbosity > 0) { _outputLevelIndentTabs(); cout << "Frame 3\n"; }
 
 					surf1 -> clear(1.0, 1.0, 1.0, 1.0);
 					surf1 -> draw1();
@@ -128,7 +128,7 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 
 					drawToBuf = device -> getDrawToFramebuffer();
 
-					if(verbosity > 0) _outputLevelIndentTabs(); cout << "Frame 4\n";
+					if(verbosity > 0) { _outputLevelIndentTabs(); cout << "Frame 4\n"; }
 
 					surf1 -> clear(1.0, 1.0, 1.0, 1.0);
 					surf2 -> clear(0.0, 0.0, 0.0, 0.0);
