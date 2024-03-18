@@ -49,7 +49,7 @@ class adsDrmDeviceUnitTest : public adsUnitTest
 				_notifyTestResult("DRM Device Tests", false, msg);
 			}
 
-			if(allPassed && verbosity > 0)
+			if(allPassed && verbosity > 1)
 			{
 				device -> enumerateResources(_getLevel() + 1);
 				cout << "\n";
