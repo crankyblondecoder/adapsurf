@@ -93,24 +93,37 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 					_notifyTestResult("Cairo Surface Tests", false, msg);
 				}
 
-				if(surf1)
+				if(surf1 && surf2)
 				{
+					Framebuffer* drawToBuf = device -> getDrawToFramebuffer();
+
 					surf1 -> clear(1.0, 1.0, 1.0, 1.0);
 					surf1 -> draw1();
-					surf1 -> draw2();
-					Framebuffer* drawToBuf = device -> getDrawToFramebuffer();
 					drawToBuf -> compose(*surf1);
 					device -> pageFlip();
 					sleep(2);
-				}
 
-				if(surf1 && surf2)
-				{
+					drawToBuf = device -> getDrawToFramebuffer();
+
+					surf1 -> clear(1.0, 1.0, 1.0, 1.0);
+					surf1 -> draw2();
+					drawToBuf -> compose(*surf1);
+					device -> pageFlip();
+					sleep(2);
+
+					drawToBuf = device -> getDrawToFramebuffer();
 					surf1 -> clear(1.0, 1.0, 1.0, 1.0);
 					surf1 -> draw1();
+					surf1 -> draw2();
+					drawToBuf -> compose(*surf1);
+					device -> pageFlip();
+					sleep(2);
+
+					drawToBuf = device -> getDrawToFramebuffer();
+					surf1 -> clear(1.0, 1.0, 1.0, 1.0);
 					surf2 -> clear(0.0, 0.0, 0.0, 0.0);
-					//surf2 -> draw2();
-					Framebuffer* drawToBuf = device -> getDrawToFramebuffer();
+					surf1 -> draw2();
+					surf2 -> draw1();
 					drawToBuf -> compose(*surf1);
 					drawToBuf -> compose(*surf2);
 					device -> pageFlip();
