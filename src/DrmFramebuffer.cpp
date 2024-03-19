@@ -255,7 +255,7 @@ void DrmFramebuffer::compose(Surface& surface)
 		{
 			for(unsigned pixel = 0; pixel < numPixCopyPerLine; pixel++)
 			{
-				// Work at byte level because it then become machine endien agnostic.
+				// Work at byte level because it then becomes machine endien agnostic.
 				srcBlue = *srcCpPosn++;
 				srcGreen = *srcCpPosn++;
 				srcRed = *srcCpPosn++;
@@ -287,6 +287,10 @@ void DrmFramebuffer::compose(Surface& surface)
 						*fbCpPosn = srcRed + (uint8_t)((double)(*fbCpPosn) * effAlpha);
 						fbCpPosn += 2;
 					}
+				}
+				else
+				{
+					fbCpPosn += 4;
 				}
 			}
 
