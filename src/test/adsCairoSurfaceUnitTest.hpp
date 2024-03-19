@@ -76,12 +76,16 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 
 				TestDraw1* surf1 = 0;
 				TestDraw1* surf2 = 0;
+				TestDraw2* surf3 = 0;
+				TestDraw2* surf4 = 0;
 
 				// Try and construct a cairo surface.
 				try
 				{
 					surf1 = new TestDraw1(dispWidth, dispHeight);
 					surf2 = new TestDraw1(dispWidth, dispHeight);
+					surf3 = new TestDraw2(0, 0, dispWidth * 3 / 4, dispHeight * 3 / 4);
+					surf4 = new TestDraw2(dispWidth / 4, dispHeight / 4, dispWidth * 3 / 4, dispHeight * 3 / 4);
 				}
 				catch(const Exception& ex)
 				{
@@ -93,9 +97,11 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 					_notifyTestResult("Cairo Surface Tests", false, msg);
 				}
 
+				Framebuffer* drawToBuf;
+
 				if(surf1 && surf2)
 				{
-					Framebuffer* drawToBuf = device -> getDrawToFramebuffer();
+					drawToBuf = device -> getDrawToFramebuffer();
 
 					if(verbosity > 0) { _outputLevelIndentTabs(); cout << "Frame 1\n"; }
 
@@ -142,6 +148,22 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 
 				if(surf1) delete surf1;
 				if(surf2) delete surf2;
+
+				if(surf3 && surf4)
+				{
+					drawToBuf = device -> getDrawToFramebuffer();
+					device -> clear(1.0, 1.0, 1.0);
+
+					if(verbosity > 0) { _outputLevelIndentTabs(); cout << "Frame 5\n"; }
+
+					surf3 -> draw1();
+					drawToBuf -> compose(*surf3);
+					device -> pageFlip();
+					sleep(2);
+				}
+
+				if(surf3) delete surf3;
+				if(surf4) delete surf4;
 			}
 		}
 
@@ -189,6 +211,26 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 						cairo_rectangle(ctx, _getWidth() / 4, _getHeight() / 4, _getWidth() * 3 / 4, _getHeight() * 3 / 4);
 						cairo_fill(ctx);
 					}
+				}
+		};
+
+		class TestDraw2 : public CairoSurface
+		{
+			public:
+
+				TestDraw2(int localPosnX, int localPosnY, uint32_t dispWidth, uint32_t dispHeight)
+					: CairoSurface(localPosnX, localPosnY, dispWidth, dispHeight)
+				{
+				}
+
+				virtual ~TestDraw2()
+				{
+				}
+
+				void draw1()
+				{
+					// RGB 29, 140, 209
+					clear(29/255.0, 140.0/255.0, 209.0/255.0, 0.5);
 				}
 		};
 };
