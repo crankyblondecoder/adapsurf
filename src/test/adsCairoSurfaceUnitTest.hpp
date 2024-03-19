@@ -156,8 +156,20 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 
 					if(verbosity > 0) { _outputLevelIndentTabs(); cout << "Frame 5\n"; }
 
+					surf3 -> clear(0.0, 0.0, 0.0, 0.0);
 					surf3 -> draw1();
 					drawToBuf -> compose(*surf3);
+					device -> pageFlip();
+					sleep(2);
+
+					drawToBuf = device -> getDrawToFramebuffer();
+					device -> clear(1.0, 1.0, 1.0);
+
+					if(verbosity > 0) { _outputLevelIndentTabs(); cout << "Frame 6\n"; }
+
+					surf4 -> clear(0.0, 0.0, 0.0, 0.0);
+					surf4 -> draw1();
+					drawToBuf -> compose(*surf4);
 					device -> pageFlip();
 					sleep(2);
 				}
@@ -218,8 +230,8 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 		{
 			public:
 
-				TestDraw2(int localPosnX, int localPosnY, uint32_t dispWidth, uint32_t dispHeight)
-					: CairoSurface(localPosnX, localPosnY, dispWidth, dispHeight)
+				TestDraw2(int localPosnX, int localPosnY, uint32_t width, uint32_t height)
+					: CairoSurface(localPosnX, localPosnY, width, height)
 				{
 				}
 
