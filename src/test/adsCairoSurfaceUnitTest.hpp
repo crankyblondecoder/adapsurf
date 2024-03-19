@@ -172,6 +172,20 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 					drawToBuf -> compose(*surf4);
 					device -> pageFlip();
 					sleep(2);
+
+					drawToBuf = device -> getDrawToFramebuffer();
+					device -> clear(1.0, 1.0, 1.0);
+
+					if(verbosity > 0) { _outputLevelIndentTabs(); cout << "Frame 7\n"; }
+
+					surf3 -> clear(0.0, 0.0, 0.0, 0.0);
+					surf3 -> draw1();
+					surf4 -> clear(0.0, 0.0, 0.0, 0.0);
+					surf4 -> draw1();
+					drawToBuf -> compose(*surf3);
+					drawToBuf -> compose(*surf4);
+					device -> pageFlip();
+					sleep(2);
 				}
 
 				if(surf3) delete surf3;
