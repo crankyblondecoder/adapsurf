@@ -28,7 +28,7 @@ namespace adapsurf {
 			virtual uint32_t getDisplayResolutionHeight() = 0;
 
 			/**
-			 * Get the framebuffer to draw to.
+			 * Get the framebuffer to draw to. This will not be cleared ie It will still have its previous pixel data.
 			 */
 			virtual Framebuffer* getDrawToFramebuffer() = 0;
 
