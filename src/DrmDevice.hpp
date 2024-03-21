@@ -103,6 +103,9 @@ namespace adapsurf {
 			/** Second framebuffer. */
 			DrmFramebuffer* _fb2;
 
+			/** Third framebuffer. */
+			DrmFramebuffer* _fb3;
+
 			/** The current framebuffer that is bound to the crtc. ie The front buffer, which is being displayed. */
 			unsigned _curFbNum;
 

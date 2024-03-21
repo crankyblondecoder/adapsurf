@@ -69,6 +69,10 @@ DrmDevice::~DrmDevice()
 
 void DrmDevice::__dealloc()
 {
+	if(_fb1) { delete _fb1; _fb1 = 0; }
+	if(_fb2) { delete _fb2; _fb2 = 0; }
+	if(_fb3) { delete _fb3; _fb3 = 0; }
+
 	if(_prevCrtc) drmModeFreeCrtc(_prevCrtc);
 
 	if(_connectorAlloc)
@@ -91,7 +95,8 @@ void DrmDevice::__dealloc()
 }
 
 DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex, int modeIndex)
-	: _deviceFdAlloc{false}, _drmResourcesAlloc{false}, _connectorAlloc{false}, _connectorMode{0}, _curFbNum{0}
+	: _deviceFdAlloc{false}, _drmResourcesAlloc{false}, _connectorAlloc{false}, _connectorMode{0}, _fb1{0},
+	_fb2{0}, _fb3{0}, _curFbNum{0}
 {
 	_driDeviceFilePathName = "/dev/dri/card";
 	_driDeviceFilePathName += to_string(cardNumber);
@@ -277,19 +282,16 @@ DrmDevice::DrmDevice(unsigned cardNumber, int connectorIndex, int modeIndex)
 		_prevCrtc = drmModeGetCrtc(_deviceFd, _crtcId);
 	}
 
-	_fb1 = 0;
-	_fb2 = 0;
+	// Generate framebuffers.
 
 	try
 	{
 		_fb1 = __generateFramebuffer();
 		_fb2 = __generateFramebuffer();
+		_fb3 = __generateFramebuffer();
 	}
 	catch(const Exception& ex)
 	{
-		if(_fb1) delete _fb1;
-		if(_fb2) delete _fb2;
-
 		__dealloc();
 
 		throw ex;
@@ -537,15 +539,20 @@ void DrmDevice::pageFlip()
 
 	DrmFramebuffer* nextFb;
 
-	if(_curFbNum == 0 || _curFbNum == 2)
+	if(_curFbNum == 0 || _curFbNum == 3)
 	{
 		_curFbNum = 1;
 		nextFb = _fb1;
 	}
-	else
+	else if(_curFbNum == 1)
 	{
 		_curFbNum = 2;
 		nextFb = _fb2;
+	}
+	else
+	{
+		_curFbNum = 3;
+		nextFb = _fb3;
 	}
 
 	drmModeSetCrtc(_deviceFd, _crtcId, nextFb -> getFramebufferId(), 0, 0, &(_connector -> connector_id), 1, _connectorMode);
@@ -561,6 +568,10 @@ DrmFramebuffer* DrmDevice::__getBackBuffer()
 		return _fb2;
 	}
 	else if(_curFbNum == 2)
+	{
+		return _fb3;
+	}
+	else if(_curFbNum == 3)
 	{
 		return _fb1;
 	}
