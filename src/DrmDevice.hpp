@@ -41,6 +41,9 @@ namespace adapsurf {
 			 */
 			static void enumerateDeviceResources(unsigned cardNumber, unsigned prefTabNum);
 
+			/** libDrm page flip even handler. */
+			static void pageFlipEventHandler(int fd, unsigned sequence, unsigned tv_sec, unsigned tv_usec, void* userData);
+
 			/**
 			 * Do a page flip. ie Swap the ctrc to use the current framebuffer and make another framebuffer current.
 			 */
@@ -108,6 +111,9 @@ namespace adapsurf {
 
 			/** The current framebuffer that is bound to the crtc. ie The front buffer, which is being displayed. */
 			unsigned _curFbNum;
+
+			/** If true then a page flip has been requested but not completed. */
+			bool _pageFlipping;
 
 			/**
 			 * Generate a framebuffer for rendering to this device.

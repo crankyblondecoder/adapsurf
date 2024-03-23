@@ -1,6 +1,7 @@
 #include <cstring>
 #include <fcntl.h>
 #include <iostream>
+#include <poll.h>
 #include <string>
 #include <unistd.h>
 
@@ -528,14 +529,63 @@ void DrmDevice::enumerateDeviceResources(unsigned cardNumber, unsigned prefTabNu
 	cout << "\n";
 }
 
+void DrmDevice::pageFlipEventHandler(int fd, unsigned sequence, unsigned tv_sec, unsigned tv_usec, void* userData)
+{
+	if(userData)
+	{
+		((DrmDevice*) userData) -> _pageFlipping = false;
+	}
+}
+
 void DrmDevice::pageFlip()
 {
+	if(!_deviceFd) return;
+
 	if(drmSetMaster(_deviceFd) == -1)
 	{
 		std::string msg("Could not set device as master. IOCTL error number: ");
 		msg += std::to_string(errno);
 		throw Exception(Exception::Error::DRM_CANT_SET_MASTER, msg);
 	}
+
+	bool forceFlip = false;
+
+	if(_pageFlipping)
+	{
+		// Have to wait for DRM_MODE_PAGE_FLIP_EVENT or until a reasonable timeout occurs.
+		// If the timeout or error occurs just force an immediate no vysnc page flip.
+
+		struct pollfd toPoll =
+		{
+			.fd = _deviceFd,
+			.events = POLLIN
+		};
+
+		// Timeout is set to 33 milliseconds which corresponds to 30 FPS.
+
+		int ret = poll(&toPoll, 1, 33);
+
+		// Anything other than success just forces a flip.
+		if(ret > 0 && toPoll.revents & POLLIN)
+		{
+			// Ready to attempt drm event read.
+			drmEventContext event =
+			{
+				.version = 2,
+				.page_flip_handler = pageFlipEventHandler
+			};
+
+			int eventRet = drmHandleEvent(_deviceFd, &event);
+
+			if(eventRet < 0) forceFlip = true;
+		}
+		else
+		{
+			forceFlip = true;
+		}
+	}
+
+	bool initialFlip = _curFbNum == 0;
 
 	DrmFramebuffer* nextFb;
 
@@ -555,7 +605,28 @@ void DrmDevice::pageFlip()
 		nextFb = _fb3;
 	}
 
-	drmModeSetCrtc(_deviceFd, _crtcId, nextFb -> getFramebufferId(), 0, 0, &(_connector -> connector_id), 1, _connectorMode);
+	if(!(initialFlip || forceFlip))
+	{
+		// The "this" pointer passed is given back to the drm even handler.
+		// Return value is the negative of the error number.
+		int retVal = drmModePageFlip(_deviceFd, _crtcId, nextFb -> getFramebufferId(), DRM_MODE_PAGE_FLIP_EVENT, this);
+
+		if(retVal >= 0)
+		{
+			_pageFlipping = true;
+		}
+		else
+		{
+			forceFlip = true;
+		}
+	}
+
+	if(initialFlip || forceFlip)
+	{
+		// Return value is the negative of the error number.
+		drmModeSetCrtc(_deviceFd, _crtcId, nextFb -> getFramebufferId(), 0, 0, &(_connector -> connector_id), 1, _connectorMode);
+		_pageFlipping = false;
+	}
 
 	// Just ignore any error for now.
 	drmDropMaster(_deviceFd);
