@@ -534,6 +534,8 @@ void DrmDevice::pageFlipEventHandler(int fd, unsigned sequence, unsigned tv_sec,
 	if(userData)
 	{
 		((DrmDevice*) userData) -> _pageFlipping = false;
+
+		cout << "Page flipping handler success.\n";
 	}
 }
 
