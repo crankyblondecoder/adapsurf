@@ -490,6 +490,8 @@ void DrmDevice::enumerateDeviceResources(unsigned cardNumber, unsigned prefTabNu
 
 					cout << prefixTabs << "\tMode Index: " << modeIndex << "\n";
 
+					cout << prefixTabs << "\t\tvrefresh: " << mode.vrefresh << "\n";
+
 					if(mode.type & DRM_MODE_TYPE_PREFERRED)
 					{
 						cout << prefixTabs << "\t\tPref horiz display size: " << mode.hdisplay << "\n";
@@ -534,8 +536,6 @@ void DrmDevice::pageFlipEventHandler(int fd, unsigned sequence, unsigned tv_sec,
 	if(userData)
 	{
 		((DrmDevice*) userData) -> _pageFlipping = false;
-
-		cout << "Page flipping handler success.\n";
 	}
 }
 
