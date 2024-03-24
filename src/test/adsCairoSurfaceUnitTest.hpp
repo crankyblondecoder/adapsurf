@@ -78,6 +78,7 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 				TestDraw1* surf2 = 0;
 				TestDraw2* surf3 = 0;
 				TestDraw2* surf4 = 0;
+				TestDraw3* surf5 = 0;
 
 				// Try and construct a cairo surface.
 				try
@@ -86,6 +87,7 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 					surf2 = new TestDraw1(dispWidth, dispHeight);
 					surf3 = new TestDraw2(0, 0, dispWidth * 3 / 4, dispHeight * 3 / 4);
 					surf4 = new TestDraw2(dispWidth / 4, dispHeight / 4, dispWidth * 3 / 4, dispHeight * 3 / 4);
+					surf5 = new TestDraw3(0, 0, dispWidth, dispHeight);
 				}
 				catch(const Exception& ex)
 				{
@@ -190,6 +192,22 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 
 				if(surf3) delete surf3;
 				if(surf4) delete surf4;
+
+				if(surf5)
+				{
+					if(verbosity > 0) { _outputLevelIndentTabs(); cout << "Rapid Frame\n"; }
+
+					drawToBuf = device -> getDrawToFramebuffer();
+					device -> clear(0.0, 0.0, 0.0);
+
+					surf5 -> draw1(100);
+					drawToBuf -> compose(*surf5);
+					device -> pageFlip();
+
+					sleep(2);
+				}
+
+				if(surf5) delete surf5;
 			}
 		}
 
@@ -257,6 +275,50 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 				{
 					// RGB 29, 140, 209
 					clear(29/255.0, 140.0/255.0, 209.0/255.0, 0.5);
+				}
+		};
+
+		class TestDraw3 : public CairoSurface
+		{
+			public:
+
+				TestDraw3(int localPosnX, int localPosnY, uint32_t width, uint32_t height)
+					: CairoSurface(localPosnX, localPosnY, width, height)
+				{
+				}
+
+				virtual ~TestDraw3()
+				{
+				}
+
+				void draw1(int gradientCentreOffset)
+				{
+					// Draws a "slit" across the context with a gradient.
+
+					clear(0, 0, 0, 0);
+
+					cairo_t* ctx = _getContext();
+
+					if(ctx)
+					{
+						cairo_pattern_t* gradPattern = cairo_pattern_create_linear(0.0, 0.0, _getWidth() - 1, 0.0);
+
+						if(gradPattern)
+						{
+							cairo_pattern_add_color_stop_rgba(gradPattern, 0.0, 0.0, 0.0, 0.0, 0.0);
+
+							// RGB 230, 11, 11
+							cairo_pattern_add_color_stop_rgba(gradPattern, (double)gradientCentreOffset / (double)_getWidth(),
+								230/255.0, 11.0/255.0, 21.0/255.0, 0.5);
+
+							cairo_pattern_add_color_stop_rgba(gradPattern, 1.0, 0.0, 0.0, 0.0, 0.0);
+
+							cairo_rectangle(ctx, 0.0, _getHeight() - 20, _getWidth(), 40);
+							cairo_fill(ctx);
+
+							cairo_pattern_destroy(gradPattern);
+						}
+					}
 				}
 		};
 };
