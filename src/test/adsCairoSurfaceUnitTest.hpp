@@ -307,9 +307,10 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 						{
 							cairo_pattern_add_color_stop_rgba(gradPattern, 0.0, 0.0, 0.0, 0.0, 0.0);
 
+							double offset = (double)gradientCentreOffset / (double)_getWidth();
+
 							// RGB 230, 11, 11
-							cairo_pattern_add_color_stop_rgba(gradPattern, (double)gradientCentreOffset / (double)_getWidth(),
-								230/255.0, 11.0/255.0, 21.0/255.0, 0.5);
+							cairo_pattern_add_color_stop_rgba(gradPattern, offset, 230/255.0, 11.0/255.0, 21.0/255.0, 1.0);
 
 							cairo_pattern_add_color_stop_rgba(gradPattern, 1.0, 0.0, 0.0, 0.0, 0.0);
 
