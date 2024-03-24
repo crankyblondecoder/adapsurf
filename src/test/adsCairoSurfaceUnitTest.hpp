@@ -314,6 +314,7 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 
 							cairo_pattern_add_color_stop_rgba(gradPattern, 1.0, 0.0, 0.0, 0.0, 0.0);
 
+							cairo_set_source(ctx, gradPattern);
 							cairo_rectangle(ctx, 0.0, _getHeight() - 20, _getWidth(), 40);
 							cairo_fill(ctx);
 
