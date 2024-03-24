@@ -197,14 +197,24 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 				{
 					if(verbosity > 0) { _outputLevelIndentTabs(); cout << "Rapid Frame\n"; }
 
-					drawToBuf = device -> getDrawToFramebuffer();
-					device -> clear(0.0, 0.0, 0.0);
+					unsigned traverseStart = 40;
+					unsigned traverseEnd = surf5 -> getWidth() - 40;
 
-					surf5 -> draw1(100);
-					drawToBuf -> compose(*surf5);
-					device -> pageFlip();
+					for(int pass = 0; pass < 6; pass++)
+					{
+						int step = ((pass % 2) - 1) * 5;
 
-					sleep(2);
+						for(int offset = step > 0 ? traverseStart : traverseEnd; offset >= traverseStart &&
+							offset <= traverseEnd; offset += step )
+						{
+							drawToBuf = device -> getDrawToFramebuffer();
+							device -> clear(0.0, 0.0, 0.0);
+
+							surf5 -> draw1(offset);
+							drawToBuf -> compose(*surf5);
+							device -> pageFlip();
+						}
+					}
 				}
 
 				if(surf5) delete surf5;
