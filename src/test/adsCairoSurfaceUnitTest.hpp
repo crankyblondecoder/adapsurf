@@ -204,7 +204,7 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 					{
 						int step = ((pass % 2) - 1) * 5;
 
-						for(int offset = step > 0 ? traverseStart : traverseEnd; offset >= traverseStart &&
+						for(unsigned offset = step > 0 ? traverseStart : traverseEnd; offset >= traverseStart &&
 							offset <= traverseEnd; offset += step )
 						{
 							drawToBuf = device -> getDrawToFramebuffer();
