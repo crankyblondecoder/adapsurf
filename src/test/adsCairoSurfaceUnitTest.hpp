@@ -200,9 +200,9 @@ class adsCairoSurfaceUnitTest : public adsUnitTest
 					unsigned traverseStart = 40;
 					unsigned traverseEnd = surf5 -> getWidth() - 40;
 
-					for(int pass = 0; pass < 6; pass++)
+					for(int pass = 0; pass < 10; pass++)
 					{
-						int step = ((pass % 2) * 2 - 1) * 5;
+						int step = ((pass % 2) * 2 - 1) * 2;
 
 						for(unsigned offset = step > 0 ? traverseStart : traverseEnd; offset >= traverseStart &&
 							offset <= traverseEnd; offset += step)
