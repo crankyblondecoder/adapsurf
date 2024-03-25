@@ -7,32 +7,36 @@ export objFiles := CairoSurface.o DrmDevice.o DrmFramebuffer.o Exception.o Frame
 export libs = drm cairo
 
 export debugLibName = libAdapSurf_debug.so.0.1
+export debugLibNameStatic = libAdapSurf_debug.a
 export releaseLibName = libAdapSurf.so.0.1
+export releaseLibNameStatic = libAdapSurf.a
 
 .PHONY : debug
 debug :
-	$(MAKE) -C debug debug
+	cd debug; $(MAKE) --makefile=../makefile_debug debug
 
 .PHONY : clean
 clean :
-	- $(MAKE) -C debug clean
-	- $(MAKE) -C test clean
-	- $(MAKE) -C release clean
+	- cd debug; $(MAKE) --makefile=../makefile_debug clean
+	- cd test; $(MAKE) --makefile=../makefile_test clean
+	- cd release; $(MAKE) --makefile=../makefile_release clean
 	- rm $(debugLibName)
+	- rm $(debugLibNameStatic)
 	- rm $(releaseLibName)
+	- rm $(releaseLibNameStatic)
 
 .PHONY : test
 test : debug
-	$(MAKE) -C test test
+	cd test; $(MAKE) --makefile=../makefile_test test
 
 .PHONY : runtest
 runtest :
-	$(MAKE) -C test runtest
+	cd test; $(MAKE) --makefile=../makefile_test runtest
 
 .PHONY : release
 release :
-	$(MAKE) -C release release
+	cd release; $(MAKE) --makefile=../makefile_release release
 
 .PHONY : cardinfo
 cardinfo : debug
-	$(MAKE) -C test cardinfo
+	cd test; $(MAKE) --makefile=../makefile_test cardinfo

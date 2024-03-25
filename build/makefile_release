@@ -18,6 +18,7 @@ release : $(objFiles)
 	@echo "*** Building - Release ***"
 	@echo
 	$(cname) $(cflags) -shared -o ../$(releaseLibName) $(objFiles) $(addprefix -l, $(libs))
+	ar rcs ../$(releaseLibNameStatic) $(objFiles)
 	@echo
 	@echo
 
