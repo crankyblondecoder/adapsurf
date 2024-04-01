@@ -32,4 +32,4 @@ endif
 
 .PHONY : clean
 clean :
-	rm *.o *.dep $(libName)
+	rm *.o *.dep
