@@ -7,8 +7,8 @@
 
 #include "Surface.hpp"
 
-namespace adapsurf {
-
+namespace adapsurf
+{
 	/**
 	 * Cairo based surface.
 	 */
@@ -28,10 +28,10 @@ namespace adapsurf {
 			CairoSurface(int localPositionX, int localPositionY, int width, int height);
 
 			// Impl.
-			virtual uint8_t* getPixelData();
+			virtual uint8_t* _getPixelData();
 
 			// Impl.
-			virtual unsigned getPixelDataStride();
+			virtual unsigned _getPixelDataStride();
 
 			// Impl.
 			virtual unsigned getWidth();
@@ -47,6 +47,9 @@ namespace adapsurf {
 			 * @param alpha Alpha component.
 			 */
 			void clear(double red, double green, double blue, double alpha);
+
+			// Impl.
+			virtual void compose(Surface& surface);
 
 		protected:
 

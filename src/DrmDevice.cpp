@@ -632,6 +632,17 @@ void DrmDevice::pageFlip()
 
 	// Just ignore any error for now.
 	drmDropMaster(_deviceFd);
+
+	// Clear the new current back buffer if a clear colour has been set.
+	if(_getClearColourSet())
+	{
+		DrmFramebuffer* backBuf = __getBackBuffer();
+
+		if(backBuf)
+		{
+			backBuf -> clear(_getClearColourRed(), _getClearColourGreen(), _getClearColourBlue());
+		}
+	}
 }
 
 DrmFramebuffer* DrmDevice::__getBackBuffer()

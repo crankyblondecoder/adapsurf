@@ -149,3 +149,13 @@ void Surface::__updateGlobalPosn()
 		_globalPositionY += _parent -> _getGlobalPositionY();
 	}
 }
+
+uint8_t* Surface::getPixelData()
+{
+	return _getPixelData();
+}
+
+unsigned Surface::getPixelDataStride()
+{
+	return _getPixelDataStride();
+}

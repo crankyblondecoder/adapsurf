@@ -57,6 +57,10 @@ class adsDrmDeviceUnitTest : public adsUnitTest
 
 			if(device)
 			{
+				// Clear colour that is applied to each back buffer just as it becomes current.
+				device -> setClearColour(1.0, 1.0, 1.0);
+				device -> pageFlip();
+
 				device -> clear(1.0, 0.0, 0.0);
 				device -> pageFlip();
 

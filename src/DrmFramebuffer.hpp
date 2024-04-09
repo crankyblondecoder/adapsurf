@@ -5,8 +5,8 @@
 
 #include "Framebuffer.hpp"
 
-namespace adapsurf {
-
+namespace adapsurf
+{
 	/**
 	 * A Linux DRM based framebuffer.
 	 * @note For now only XR24 pixel format is supported => [31:0] x:R:G:B 8:8:8:8 little endian

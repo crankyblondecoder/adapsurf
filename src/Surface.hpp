@@ -5,8 +5,8 @@
 
 #define CHILD_ARRAY_PAGE_SIZE 8
 
-namespace adapsurf {
-
+namespace adapsurf
+{
 	class Framebuffer;
 
 	/**
@@ -35,11 +35,17 @@ namespace adapsurf {
 			void compose(Framebuffer& framebuffer);
 
 			/**
+			 * Compose a surface onto this surface.
+			 * The surface being composed is assumed to have it's local coordinate system relative to this.
+			 */
+			virtual void compose(Surface& surface) = 0;
+
+			/**
 			 * Get this surfaces pixel data.
-			 * This will include the composited pixel data of all child surfaces.
+			 * This does _not_ include the composited pixel data of all child surfaces.
 			 * @returns This surfaces pixel data in CAIRO_FORMAT_ARGB32 format.
 			 */
-			virtual uint8_t* getPixelData() = 0;
+			uint8_t* getPixelData();
 
 			/**
 			 * Get the stride of this surfaces pixel data.
@@ -47,7 +53,7 @@ namespace adapsurf {
 			 * width of this surface.
 			 * @returns Stride, in bytes.
 			 */
-			virtual unsigned getPixelDataStride() = 0;
+			unsigned getPixelDataStride();
 
 			/**
 			 * Get the global position of this surface. X coordinate. Positive is right.
@@ -90,6 +96,21 @@ namespace adapsurf {
 			 * @returns Y coordinate in pixels.
 			 */
 			int _getGlobalPositionY();
+
+			/**
+			 * Get this surfaces pixel data.
+			 * This does _not_ include the composited pixel data of all child surfaces.
+			 * @returns This surfaces pixel data in CAIRO_FORMAT_ARGB32 format.
+			 */
+			virtual uint8_t* _getPixelData() = 0;
+
+			/**
+			 * Get the stride of this surfaces pixel data.
+			 * This is essentially the number of bytes per "scan line" and may be larger than the number required for the pixel
+			 * width of this surface.
+			 * @returns Stride, in bytes.
+			 */
+			virtual unsigned _getPixelDataStride() = 0;
 
 		private:
 

@@ -10,8 +10,8 @@
 #include "Device.hpp"
 #include "DrmFramebuffer.hpp"
 
-namespace adapsurf {
-
+namespace adapsurf
+{
 	/**
 	 * Linux DRM based device.
 	 */

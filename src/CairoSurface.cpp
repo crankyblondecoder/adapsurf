@@ -33,7 +33,7 @@ CairoSurface::CairoSurface(int localPositionX, int localPositionY, int width, in
 	}
 }
 
-uint8_t* CairoSurface::getPixelData()
+uint8_t* CairoSurface::_getPixelData()
 {
 	if(_cSurface)
 	{
@@ -44,7 +44,7 @@ uint8_t* CairoSurface::getPixelData()
 	return 0;
 }
 
-unsigned CairoSurface::getPixelDataStride()
+unsigned CairoSurface::_getPixelDataStride()
 {
 	if(_cSurface)
 	{
@@ -96,4 +96,9 @@ void CairoSurface::clear(double red, double green, double blue, double alpha)
 		cairo_set_source_rgba(_cairoContext, red, green, blue, alpha);
 		cairo_paint(_cairoContext);
 	}
+}
+
+void CairoSurface::compose(Surface& surface)
+{
+	TODO;
 }

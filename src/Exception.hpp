@@ -5,8 +5,8 @@
 
 using namespace std;
 
-namespace adapsurf {
-
+namespace adapsurf
+{
 	/**
 	 * Create and invoke thread entry point.
 	 */

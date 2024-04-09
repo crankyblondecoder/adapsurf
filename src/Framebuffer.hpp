@@ -5,8 +5,8 @@
 
 #include "Surface.hpp"
 
-namespace adapsurf {
-
+namespace adapsurf
+{
 	/**
 	 * A framebuffer that all surfaces are rendered to.
 	 * @note Currently this must have a stride size (number of bytes between rows) that is compatible with Cairo.
