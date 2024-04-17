@@ -184,9 +184,6 @@ std::string DrmFramebuffer::getFourcc()
 
 void DrmFramebuffer::compose(Surface& surface)
 {
-	// TODO Posibly offer an option to create an intermediate buffer to compose into in case the bus between CPU and GPU on
-	// small form factor systems (like Pi Zero) is slow.
-
 	int srcPosnX = surface.getGlobalPositionX();
 	int srcPosnY = surface.getGlobalPositionY();
 
@@ -197,7 +194,7 @@ void DrmFramebuffer::compose(Surface& surface)
 	unsigned srcEndX = srcPosnX + srcWidth - 1;
 	unsigned srcEndY = srcPosnY + srcHeight - 1;
 
-	// Short circuit the composition if none of the target surface is within this framebuffer.
+	// Short circuit the composition if none of the source surface is within this framebuffer.
 	if(srcPosnX >= (int)_width || srcPosnY >= (int)_height || srcEndX < 0 || srcEndY < 0) return;
 
 	uint8_t* pixelData = surface.getPixelData();

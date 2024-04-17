@@ -46,6 +46,7 @@ namespace adapsurf
 
 			/**
 			 * Do a page flip. ie Swap the ctrc to use the current framebuffer and make another framebuffer current.
+			 * If a previous page flip is still pending then this function will block until it is complete or a timeout occurs.
 			 */
 			void pageFlip();
 

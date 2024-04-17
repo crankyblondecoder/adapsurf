@@ -28,12 +28,6 @@ namespace adapsurf
 			CairoSurface(int localPositionX, int localPositionY, int width, int height);
 
 			// Impl.
-			virtual uint8_t* _getPixelData();
-
-			// Impl.
-			virtual unsigned _getPixelDataStride();
-
-			// Impl.
 			virtual unsigned getWidth();
 
 			// Impl.
@@ -60,6 +54,12 @@ namespace adapsurf
 
 			unsigned _getHeight();
 
+			// Impl.
+			virtual uint8_t* _getPixelData();
+
+			// Impl.
+			virtual unsigned _getPixelDataStride();
+
 		private:
 
 			/** Cairo surface to render to. */
@@ -67,6 +67,12 @@ namespace adapsurf
 
 			/** Cairo context. */
 			cairo_t* _cairoContext;
+
+			/** @see getPixelDataStride() */
+			unsigned __getPixelDataStride();
+
+			/** @see getPixelData() */
+			uint8_t* __getPixelData();
 	};
 }
 
