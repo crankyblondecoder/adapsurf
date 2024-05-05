@@ -33,7 +33,7 @@ namespace adapsurf
 			virtual Framebuffer* getDrawToFramebuffer() = 0;
 
 			/**
-			 * Set the clear colour for all draw to frame buffers.
+			 * Set the clear colour for all, draw to, frame buffers.
 			 * Each framebuffer will be cleared just prior to becoming the current back buffer to draw to.
 			*/
 			virtual void setClearColour(double red, double green, double blue);

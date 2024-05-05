@@ -94,6 +94,11 @@ unsigned CairoSurface::_getHeight()
 	return 0;
 }
 
+cairo_t* CairoSurface::getContext()
+{
+	return _cairoContext;
+}
+
 cairo_t* CairoSurface::_getContext()
 {
 	return _cairoContext;

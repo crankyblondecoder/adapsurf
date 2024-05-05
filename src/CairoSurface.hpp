@@ -45,6 +45,9 @@ namespace adapsurf
 			// Impl.
 			virtual void compose(Surface& surface);
 
+			/** Get the cairo context which is used to draw to the surface. */
+			cairo_t* getContext();
+
 		protected:
 
 			/** Get the cairo context which is used to draw to the surface. */
