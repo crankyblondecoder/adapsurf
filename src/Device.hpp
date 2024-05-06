@@ -14,7 +14,7 @@ namespace adapsurf
 	{
 		public:
 
-			virtual ~Device(){};
+			virtual ~Device();
 			Device();
 
 			/**

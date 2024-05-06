@@ -2,8 +2,20 @@
 
 using namespace adapsurf;
 
+Device::~Device()
+{
+}
+
 Device::Device() : _clearColourSet{false}
 {
+}
+
+void Device::setClearColour(double red, double green, double blue)
+{
+	_clearColourRed = red;
+	_clearColourGreen = green;
+	_clearColourBlue = blue;
+	_clearColourSet = true;
 }
 
 bool Device::_getClearColourSet()
