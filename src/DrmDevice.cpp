@@ -502,6 +502,7 @@ void DrmDevice::enumerateDeviceResources(unsigned cardNumber, unsigned prefTabNu
 					{
 						cout << prefixTabs << "\t\tDriver horiz display size: " << mode.hdisplay << "\n";
 						cout << prefixTabs << "\t\tDriver vert display size: " << mode.vdisplay << "\n";
+						cout << prefixTabs << "\t\tDriver display size (h/v) ratio: " << (double)mode.hdisplay / (double)mode.vdisplay << "\n";
 					}
 
 					if(mode.type & DRM_MODE_TYPE_USERDEF)
