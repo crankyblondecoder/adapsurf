@@ -48,6 +48,11 @@ namespace adapsurf
 			uint8_t* getPixelData();
 
 			/**
+			 * Get the number of bytes in the pixel data array.
+			 */
+			unsigned getPixelDataSize();
+
+			/**
 			 * Get the stride of this surfaces pixel data.
 			 * This is essentially the number of bytes per "scan line" and may be larger than the number required for the pixel
 			 * width of this surface.

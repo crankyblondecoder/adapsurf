@@ -155,6 +155,11 @@ uint8_t* Surface::getPixelData()
 	return _getPixelData();
 }
 
+unsigned Surface::getPixelDataSize()
+{
+	return _getPixelDataStride() * getHeight();
+}
+
 unsigned Surface::getPixelDataStride()
 {
 	return _getPixelDataStride();

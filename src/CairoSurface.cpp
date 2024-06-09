@@ -108,8 +108,11 @@ void CairoSurface::clear(double red, double green, double blue, double alpha)
 {
 	if(_cairoContext)
 	{
+		cairo_save(_cairoContext);
 		cairo_set_source_rgba(_cairoContext, red, green, blue, alpha);
+		cairo_set_operator(_cairoContext, CAIRO_OPERATOR_SOURCE);
 		cairo_paint(_cairoContext);
+		cairo_restore(_cairoContext);
 	}
 }
 
